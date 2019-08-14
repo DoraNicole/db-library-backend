@@ -16,14 +16,18 @@ public class Book {
 
     @NotBlank
     private String isbn;
+
     @NotBlank
     private String title;
+
     @NotBlank
     private String author;
+
     @NotBlank
     private String publishingHouse;
 
     private Integer year;
+
     @NotBlank
     private String genre;
 
