@@ -1,5 +1,4 @@
-package com.company.library.model;
-
+package com.company.library.configuration.jwt;
 
 import java.io.Serializable;
 

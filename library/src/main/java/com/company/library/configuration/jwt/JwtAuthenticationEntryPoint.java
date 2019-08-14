@@ -1,6 +1,4 @@
-package com.company.library.configuration;
-
-
+package com.company.library.configuration.jwt;
 import java.io.IOException;
 import java.io.Serializable;
 
