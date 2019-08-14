@@ -40,4 +40,5 @@ public class BookController {
     public List<Book> searchBook(@RequestParam("query") String query) {
         return bookService.searchBook(query);
     }
+
 }
