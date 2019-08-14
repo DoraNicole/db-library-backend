@@ -10,7 +10,7 @@ import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
 @Service
-public class BookService implements BookServiceInterface{
+public class BookService implements BookServiceInterface {
 
     @Autowired
     private BookRepositoryInterface bookRepositoryInterface;
@@ -24,8 +24,9 @@ public class BookService implements BookServiceInterface{
     public List<Book> getBooks() {
         return bookRepositoryInterface.findAll();
     }
+
     @Override
-    public void remove(Long bookId){
+    public void remove(Long bookId) {
         bookRepositoryInterface.deleteById(bookId);
     }
 
