@@ -7,24 +7,27 @@ import javax.persistence.Id;
 import javax.validation.constraints.NotBlank;
 import java.sql.Blob;
 
-
 @Entity
 public class User {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
     @NotBlank
-    private String name;
+    private String firstName;
+
     @NotBlank
     private String lastName;
+
     @NotBlank
-    private String mail;
+    private String email;
+
     @NotBlank
     private String password;
-    @NotBlank
+
     private Blob img;
-    @NotBlank
+
     private boolean isAdmin;
     
     public Long getId() {
@@ -35,12 +38,12 @@ public class User {
         this.id = id;
     }
 
-    public String getName() {
-        return name;
+    public String getFirstName() {
+        return firstName;
     }
 
-    public void setName(String name) {
-        this.name = name;
+    public void setFirstName(String firstName) {
+        this.firstName = firstName;
     }
 
     public String getLastName() {
@@ -51,12 +54,12 @@ public class User {
         this.lastName = lastName;
     }
 
-    public String getMail() {
-        return mail;
+    public String getEmail() {
+        return email;
     }
 
-    public void setMail(String mail) {
-        this.mail = mail;
+    public void setEmail(String email) {
+        this.email = email;
     }
 
     public String getPassword() {
@@ -82,4 +85,5 @@ public class User {
     public void setAdmin(boolean admin) {
         isAdmin = admin;
     }
+
 }
