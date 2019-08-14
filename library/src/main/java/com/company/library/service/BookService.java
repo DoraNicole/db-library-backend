@@ -6,9 +6,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.function.Predicate;
+import java.util.stream.Collectors;
 
 @Service
-public class BookService implements BookServiceInterface{
+public class BookService implements BookServiceInterface {
 
     @Autowired
     private BookRepositoryInterface bookRepositoryInterface;
@@ -22,8 +24,18 @@ public class BookService implements BookServiceInterface{
     public List<Book> getBooks() {
         return bookRepositoryInterface.findAll();
     }
+
     @Override
-    public void remove(Long bookId){
+    public void remove(Long bookId) {
         bookRepositoryInterface.deleteById(bookId);
     }
+
+    @Override
+    public List<Book> searchBook(String query) {
+        Predicate<Book> searchByTitle = b -> b.getTitle().toLowerCase().contains(query.toLowerCase());
+        Predicate<Book> searchByGenre = b -> b.getGenre().toLowerCase().contains(query.toLowerCase());
+        Predicate<Book> searchByAuthor = b -> b.getAuthor().toLowerCase().contains(query.toLowerCase());
+        return bookRepositoryInterface.findAll().stream().filter(searchByTitle.or(searchByGenre).or(searchByAuthor)).collect(Collectors.toList());
+    }
+
 }
