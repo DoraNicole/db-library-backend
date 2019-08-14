@@ -35,4 +35,9 @@ public class BookController {
     public void removeBook(@PathVariable(value = "id") Long id){
         bookService.remove(id);
     }
+
+    @GetMapping("/searchBook")
+    public List<Book> searchBook(@RequestParam("query") String query) {
+        return bookService.searchBook(query);
+    }
 }

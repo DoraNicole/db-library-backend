@@ -9,4 +9,5 @@ public interface BookServiceInterface {
 
     public List<Book> getBooks();
     public void remove(Long bookId);
+    List<Book> searchBook(String query);
 }
