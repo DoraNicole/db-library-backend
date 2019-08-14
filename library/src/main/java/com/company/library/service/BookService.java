@@ -37,5 +37,4 @@ public class BookService implements BookServiceInterface {
         Predicate<Book> searchByAuthor = b -> b.getAuthor().toLowerCase().contains(query.toLowerCase());
         return bookRepositoryInterface.findAll().stream().filter(searchByTitle.or(searchByGenre).or(searchByAuthor)).collect(Collectors.toList());
     }
-
 }

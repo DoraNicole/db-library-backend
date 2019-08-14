@@ -12,8 +12,10 @@ public class UserBook {
 
     @ManyToOne(fetch = FetchType.EAGER)
     private User user;
+
     @ManyToOne(fetch = FetchType.EAGER)
     private Book book;
+
     private LocalDate return_date;
 
     public Long getId() {
