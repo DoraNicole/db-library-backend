@@ -11,5 +11,8 @@ public class WebConfiguration extends WebSecurityConfigurerAdapter {
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         http.httpBasic().disable();
+        http.authorizeRequests().antMatchers("/").permitAll();
+        http.csrf().disable();
+        http.cors().disable();
     }
 }
