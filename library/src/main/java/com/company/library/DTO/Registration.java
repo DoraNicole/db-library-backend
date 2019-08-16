@@ -1,11 +1,8 @@
 package com.company.library.DTO;
 
-import com.company.library.validations.PasswordMatches;
-
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 
-@PasswordMatches
 public class Registration {
 
     @NotNull
@@ -19,7 +16,6 @@ public class Registration {
     @NotNull
     @NotEmpty
     private String password;
-    private String matchingPassword;
 
     @NotNull
     @NotEmpty
@@ -47,14 +43,6 @@ public class Registration {
 
     public void setPassword(String password) {
         this.password = password;
-    }
-
-    public String getMatchingPassword() {
-        return matchingPassword;
-    }
-
-    public void setMatchingPassword(String matchingPassword) {
-        this.matchingPassword = matchingPassword;
     }
 
     public String getEmail() {
