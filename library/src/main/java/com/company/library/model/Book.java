@@ -1,9 +1,6 @@
 package com.company.library.model;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
+import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
 import java.sql.Blob;
 
@@ -31,7 +28,8 @@ public class Book {
     @NotBlank
     private String genre;
 
-    private Blob img;
+    @OneToOne(fetch = FetchType.LAZY)
+    private ImageModel img;
 
     public Long getId() {
         return id;
@@ -89,11 +87,11 @@ public class Book {
         this.genre = genre;
     }
 
-    public Blob getImg() {
+    public ImageModel getImg() {
         return img;
     }
 
-    public void setImg(Blob img) {
+    public void setImg(ImageModel img) {
         this.img = img;
     }
 }
