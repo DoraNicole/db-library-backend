@@ -4,7 +4,7 @@ public enum OrderBy {
     ID("id"), TITLE("title");
     private String OrderByCode;
 
-    private OrderBy(String orderBy) {
+    OrderBy(String orderBy) {
         this.OrderByCode = orderBy;
     }
 
