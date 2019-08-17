@@ -7,12 +7,14 @@ import com.company.library.exceptions.PagingSortingErrorResponse;
 import com.company.library.model.Book;
 import com.company.library.service.BookServiceInterface;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 
 @RestController
@@ -42,17 +44,22 @@ public class BookController {
         return bookService.searchBook(query);
     }
 
-    @RequestMapping(value = "/paginatedBooks", params = {"orderBy", "direction", "page", "size"}, method = RequestMethod.GET)
-    public Page<Book> findPaginatedBooks(@RequestParam("orderBy") String orderBy,
-                                         @RequestParam("direction") String direction, @RequestParam("page") int page,
-                                         @RequestParam("size") int size) {
+    @RequestMapping(value = "/paginatedBooks", params = {"orderBy", "direction", "page", "size", "query"}, method = RequestMethod.GET)
+    public PageImpl<Book> findPaginatedBooks(
+            @RequestParam("orderBy") String orderBy,
+            @RequestParam("direction") String direction,
+            @RequestParam("page") int page,
+            @RequestParam("size") int size,
+            @RequestParam("query") String query
+            ) {
         if (!(direction.equals(Direction.ASCENDING.getDirectionCode()) || direction.equals(Direction.DESCENDING.getDirectionCode()))) {
             throw new PaginationSortingException("Invalid sort direction");
         }
         if (!(orderBy.equals(OrderBy.ID.getOrderByCode()) || orderBy.equals(OrderBy.TITLE.getOrderByCode()))) {
             throw new PaginationSortingException("Invalid orderBy condition");
         }
-        return bookService.findPaginatedBooks(orderBy, direction, page, size);
+        List<Book> list = bookService.findPaginatedBooks(orderBy, direction, page, size).stream().filter(book -> book.getTitle().contains(query)).collect(Collectors.toCollection(ArrayList::new));
+        return new PageImpl<>(list);
     }
 
     @ExceptionHandler(PaginationSortingException.class)
