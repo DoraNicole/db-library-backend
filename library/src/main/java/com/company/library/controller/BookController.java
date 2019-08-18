@@ -1,6 +1,7 @@
 package com.company.library.controller;
 
 import com.company.library.model.Book;
+import com.company.library.model.ResponsePageList;
 import com.company.library.service.BookServiceInterface;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.support.PagedListHolder;
@@ -36,7 +37,7 @@ public class BookController {
     }
 
     @GetMapping("/paginatedBooks")
-    public PagedListHolder findPaginatedBooks(
+    public ResponsePageList findPaginatedBooks(
             @RequestParam("orderBy") String orderBy,
             @RequestParam("direction") String direction,
             @RequestParam("page") int page,
