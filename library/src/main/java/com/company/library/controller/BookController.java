@@ -2,7 +2,9 @@ package com.company.library.controller;
 
 import com.company.library.model.Book;
 import com.company.library.service.BookServiceInterface;
+import com.company.library.service.UserServiceInterface;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -13,7 +15,10 @@ import java.util.List;
 public class BookController {
 
     @Autowired
-    BookServiceInterface bookService;
+    private BookServiceInterface bookService;
+
+    @Autowired
+    private UserServiceInterface userService;
 
     @GetMapping("/books")
     @ResponseBody
@@ -21,11 +26,13 @@ public class BookController {
         return bookService.getBooks();
     }
 
+    @PreAuthorize("hasRole('ADMIN')")
     @PostMapping("/add")
     public void addBook(@RequestBody Book book) {
         bookService.addBook(book);
     }
 
+    @PreAuthorize("hasRole('ADMIN')")
     @DeleteMapping("/remove/{id}")
     public void removeBook(@PathVariable(value = "id") Long id) {
         bookService.remove(id);
@@ -33,7 +40,6 @@ public class BookController {
 
     @GetMapping("/searchBook")
     public List<Book> searchBook(@RequestParam("query") String query) {
-       return bookService.searchBook(query);
+        return bookService.searchBook(query);
     }
-
 }
