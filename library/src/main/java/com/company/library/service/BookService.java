@@ -5,6 +5,7 @@ import com.company.library.enums.OrderBy;
 import com.company.library.exceptions.PaginationSortingException;
 import com.company.library.exceptions.PagingSortingErrorResponse;
 import com.company.library.model.Book;
+import com.company.library.model.ResponsePageList;
 import com.company.library.repository.BookRepositoryInterface;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.support.PagedListHolder;
@@ -48,7 +49,7 @@ public class BookService implements BookServiceInterface {
     }
 
     @Override
-    public PagedListHolder findPaginatedBooks(String orderBy, String direction, int page, int size, String query) {
+    public ResponsePageList findPaginatedBooks(String orderBy, String direction, int page, int size, String query) {
         Sort sort = null;
         if (direction.equals("ASC")) {
             sort = new Sort(Sort.Direction.ASC, orderBy);
@@ -65,10 +66,13 @@ public class BookService implements BookServiceInterface {
         }
         List<Book> list = bookRepositoryInterface.findAll(sort).stream().filter(book -> book.getTitle().toLowerCase().contains(query.toLowerCase())).collect(Collectors.toList());
 
-        PagedListHolder pagedListHolder = new PagedListHolder<>(list);
+        PagedListHolder<Book> pagedListHolder = new PagedListHolder<>(list);
         pagedListHolder.setPageSize(size);
         pagedListHolder.setPage(page);
-        return pagedListHolder;
+        ResponsePageList response = new ResponsePageList();
+        response.setNrOfElements(pagedListHolder.getNrOfElements());
+        response.setPageList(pagedListHolder.getPageList());
+        return response;
 
     }
 
