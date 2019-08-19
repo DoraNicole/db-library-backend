@@ -16,11 +16,6 @@ public class ImageUploadService implements ImageUploadServiceInterface {
     private ImageUploadRepository imageUploadRepository;
 
     @Override
-    public void addImageModel(ImageModel imageModel) {
-        imageUploadRepository.save(imageModel);
-    }
-
-    @Override
     public List<ImageModel> getImages() {
         return imageUploadRepository.findAll();
     }
