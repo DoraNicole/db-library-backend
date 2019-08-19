@@ -1,5 +1,6 @@
 package com.company.library.controller;
 
+import com.company.library.exceptions.UserHasPenaltiesException;
 import com.company.library.model.UserBook;
 import com.company.library.service.UserBookServiceInterface;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,7 +21,7 @@ public class UserBookController {
     }
 
     @PostMapping("/addUserBook")
-    public void addUserBook(@RequestBody UserBook userBook){
+    public void addUserBook(@RequestBody UserBook userBook) throws UserHasPenaltiesException {
         userBookService.addUserBook(userBook);
     }
 

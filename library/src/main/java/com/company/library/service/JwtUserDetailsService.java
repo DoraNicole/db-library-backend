@@ -72,6 +72,7 @@ public class JwtUserDetailsService implements UserDetailsService {
             newUser.setPassword(bcryptEncoder.encode(user.getPassword()));
             newUser.setRoles(Collections.singleton(userRole));
             newUser.setAdmin(false);
+            newUser.setPenalties(0);
         }
         return userDao.save(newUser);
     }

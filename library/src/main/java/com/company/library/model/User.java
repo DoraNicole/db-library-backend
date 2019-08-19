@@ -28,6 +28,8 @@ public class User {
 
     private boolean isAdmin;
 
+    private int penalties;
+
     @ManyToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     @JoinTable(
             name = "user_roles",
@@ -98,6 +100,15 @@ public class User {
 
     public void setRoles(Set<Role> roles) {
         this.roles = roles;
+    }
+
+
+    public int getPenalties() {
+        return penalties;
+    }
+
+    public void setPenalties(int penalties) {
+        this.penalties = penalties;
     }
 
     @Override
