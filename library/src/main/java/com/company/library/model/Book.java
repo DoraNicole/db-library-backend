@@ -2,7 +2,7 @@ package com.company.library.model;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
-import java.sql.Blob;
+
 
 @Entity
 public class Book {

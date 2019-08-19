@@ -25,4 +25,5 @@ public class ImageUploadController {
     public List<ImageModel> listAllImages(){
         return imageUploadService.getImages();
     }
+
 }
