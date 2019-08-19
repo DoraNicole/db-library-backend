@@ -33,8 +33,8 @@ public class BookService implements BookServiceInterface {
     @Override
     public List<Book> searchBook(String query) {
         Predicate<Book> searchByTitle = b -> b.getTitle().toLowerCase().contains(query.toLowerCase());
-        Predicate<Book> searchByGenre = b -> b.getGenre().toLowerCase().contains(query.toLowerCase());
-        Predicate<Book> searchByAuthor = b -> b.getAuthor().toLowerCase().contains(query.toLowerCase());
-        return bookRepositoryInterface.findAll().stream().filter(searchByTitle.or(searchByGenre).or(searchByAuthor)).collect(Collectors.toList());
+//        Predicate<Book> searchByGenre = b -> b.getGenre().stream().filter(g -> g.getName() == query.toLowerCase());
+//        Predicate<Book> searchByAuthor = b -> b.getAuthor().toLowerCase().contains(query.toLowerCase());
+        return bookRepositoryInterface.findAll().stream().filter(searchByTitle).collect(Collectors.toList());
     }
 }

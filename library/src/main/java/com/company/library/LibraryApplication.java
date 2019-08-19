@@ -8,12 +8,6 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 @SpringBootApplication
 public class LibraryApplication {
 
-//	@Bean
-//	public BCryptPasswordEncoder bCryptPasswordEncoder() {
-//		return new BCryptPasswordEncoder();
-//	}
-
-
 	public static void main(String[] args) {
 		SpringApplication.run(LibraryApplication.class, args);
 	}

@@ -42,8 +42,10 @@ public class JwtUserDetailsService implements UserDetailsService {
         if(emailExists(user.getEmail())) {
             throw new EmailExistsException("this email already exists!");
         }
+
         newUser.setFirstName(user.getFirstName());
         newUser.setLastName(user.getLastName());
+
         newUser.setEmail(user.getEmail());
         newUser.setPassword(bcryptEncoder.encode(user.getPassword()));
 
