@@ -1,8 +1,10 @@
 package com.company.library.service;
 
 import com.company.library.exceptions.UserHasPenaltiesException;
+import com.company.library.model.Penalty;
 import com.company.library.model.UserBook;
 import com.company.library.repository.UserBookRepositoryInterface;
+import org.apache.tomcat.jni.Local;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -17,8 +19,9 @@ public class UserBookService implements UserBookServiceInterface {
     @Override
     public void addUserBook(UserBook userBook) throws UserHasPenaltiesException {
 
+        userBook.getUser().clearOldPenalties();
         //check if user has penalties
-        if(userBook.getUser().getPenalties() < 2)
+        if(userBook.getUser().getPenalties().size() < 2)
         userBookRepositoryInterface.save(userBook);
         else
             //throws exception and doesn`t save userBook instance if user has 2 penalties
@@ -38,7 +41,12 @@ public class UserBookService implements UserBookServiceInterface {
         userBookRepositoryInterface.findById(userBookId).ifPresent(t-> {
             LocalDate returnDate = t.getReturn_date(); // get supposed return date
             if(LocalDate.now().isAfter(returnDate)) // check if real return date is after supposed return date
-                t.getUser().setPenalties(t.getUser().getPenalties() + 1);// penalise user with one more penalty
+            {
+                // penalise user with one more penalty
+                Penalty penalty = new Penalty();
+                penalty.setPenaltyAddedDate(LocalDate.now());
+                t.getUser().addPenalty(penalty);
+            }
         });
 
 
