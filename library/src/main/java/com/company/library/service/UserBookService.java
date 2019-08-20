@@ -21,7 +21,7 @@ public class UserBookService implements UserBookServiceInterface {
 
         userBook.getUser().clearOldPenalties();
         //check if user has penalties
-        if(userBook.getUser().getPenalties().size() < 2)
+        if(userBook.getUser().getPenalties().size() < Penalty.maxNumberOfPenalties)
         userBookRepositoryInterface.save(userBook);
         else
             //throws exception and doesn`t save userBook instance if user has 2 penalties
@@ -43,9 +43,7 @@ public class UserBookService implements UserBookServiceInterface {
             if(LocalDate.now().isAfter(returnDate)) // check if real return date is after supposed return date
             {
                 // penalise user with one more penalty
-                Penalty penalty = new Penalty();
-                penalty.setPenaltyAddedDate(LocalDate.now());
-                t.getUser().addPenalty(penalty);
+                       t.getUser().addPenalty(new Penalty(LocalDate.now()));
             }
         });
 
