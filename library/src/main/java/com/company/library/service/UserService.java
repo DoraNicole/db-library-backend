@@ -29,6 +29,9 @@ public class UserService implements UserServiceInterface {
         this.userRepository = userRepository;
     }
 
+    @Autowired
+    private UserRepositoryInterface userDao;
+
     @Override
     public List<User> findAll() {
         return userRepository.findAll();
@@ -45,15 +48,14 @@ public class UserService implements UserServiceInterface {
     }
 
     @Override
-    public User registerNewUserAccount(Registration userDto) {
-        if (emailExist(userDto.getEmail())) {
+    public User registerNewUserAccount(Registration userDto) throws EmailExistsException {
+        if (emailExists(userDto.getEmail())) {
             throw new EmailExistsException(
                     "There is an account with that email adress: "
                             + userDto.getEmail());
         }
-        com.company.library.model.User newUser = new com.company.library.model.User();
+        User newUser = new User();
 
-        User user = new User();
 
         if (userDto.getEmail().equals("librarymaster0@gmail.com") && userDto.getPassword().equals("qwerty1234.")) {
             Role adminRole = roleRepository.findByName("ROLE_ADMIN");
@@ -75,13 +77,6 @@ public class UserService implements UserServiceInterface {
         return userRepository.save(newUser);
     }
 
-    private boolean emailExist(String email) {
-        User user = userRepository.findByEmail(email);
-        if (user != null) {
-            return true;
-        }
-        return false;
-    }
 
     @Override
     public void delete(User user) {
@@ -91,6 +86,21 @@ public class UserService implements UserServiceInterface {
     @Override
     public User findUserByEmail(String email) {
         return userRepository.findByEmail(email);
+    }
+
+    public boolean emailExists(final String email) {
+        com.company.library.model.User foundUser = userRepository.findByEmail(email);
+        System.out.println(foundUser);
+        return (userRepository.findByEmail(email) != null);
+    }
+
+
+    public User saveNewPassword(String email, String password) {
+
+        User foundUser = userRepository.findByEmail(email);
+        foundUser.setPassword(bcryptEncoder.encode(password));
+        return userDao.save(foundUser);
+
     }
 
 }
