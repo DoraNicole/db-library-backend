@@ -1,11 +1,11 @@
 package com.company.library.controller;
 
-import com.company.library.DTO.Registration;
-import com.company.library.exceptions.EmailExistsException;
 import com.company.library.registration.JwtRequest;
 import com.company.library.registration.JwtResponse;
 import com.company.library.registration.JwtTokenUtil;
 import com.company.library.service.JwtUserDetailsService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -13,20 +13,28 @@ import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.DisabledException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RestController;
+
 
 @RestController
 @CrossOrigin
 public class AuthenticationController {
 
-    @Autowired
-    private AuthenticationManager authenticationManager;
+    private final AuthenticationManager authenticationManager;
+    private final JwtTokenUtil jwtTokenUtil;
+    private final JwtUserDetailsService userDetailsService;
+
+    private Logger log = LoggerFactory.getLogger(getClass().getName());
 
     @Autowired
-    private JwtTokenUtil jwtTokenUtil;
-
-    @Autowired
-    private JwtUserDetailsService userDetailsService;
+    public AuthenticationController(AuthenticationManager authenticationManager, JwtTokenUtil jwtTokenUtil, JwtUserDetailsService userDetailsService) {
+        this.authenticationManager = authenticationManager;
+        this.jwtTokenUtil = jwtTokenUtil;
+        this.userDetailsService = userDetailsService;
+    }
 
     @PostMapping(value = "/authenticate")
     public ResponseEntity<?> createAuthenticationToken(@RequestBody JwtRequest authenticationRequest) throws Exception {
@@ -41,17 +49,14 @@ public class AuthenticationController {
         return ResponseEntity.ok(new JwtResponse(token));
     }
 
-    @PostMapping("/register")
-    public ResponseEntity<?> saveUser(@RequestBody Registration user) throws EmailExistsException {
-        return ResponseEntity.ok(userDetailsService.save(user));
-    }
-
     private void authenticate(String email, String password) throws Exception {
         try {
             authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(email, password));
         } catch (DisabledException e) {
+            log.error("The user is currently disabled!");
             throw new Exception("USER_DISABLED", e);
         } catch (BadCredentialsException e) {
+            log.error("Bad credentials provided!");
             throw new Exception("INVALID_CREDENTIALS", e);
         }
     }
