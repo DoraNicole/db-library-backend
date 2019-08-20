@@ -35,7 +35,9 @@ public class User {
             inverseJoinColumns = @JoinColumn(name = "role_id")
     )
     private Set<Role> roles;
-    
+
+    private boolean enabled;
+
     public Long getId() {
         return id;
     }
@@ -92,14 +94,6 @@ public class User {
         isAdmin = admin;
     }
 
-    public Set<Role> getRoles() {
-        return roles;
-    }
-
-    public void setRoles(Set<Role> roles) {
-        this.roles = roles;
-    }
-
     @Override
     public String toString() {
         final StringBuilder sb = new StringBuilder("User{");
@@ -113,5 +107,20 @@ public class User {
         sb.append(", roles=").append(roles);
         sb.append('}');
         return sb.toString();
+    }
+    public Set<Role> getRoles() {
+        return roles;
+    }
+
+    public void setRoles(Set<Role> roles) {
+        this.roles = roles;
+    }
+
+    public boolean isEnabled() {
+        return enabled;
+    }
+
+    public void setEnabled(boolean enabled) {
+        this.enabled = enabled;
     }
 }

@@ -36,15 +36,11 @@ public class UserController {
         Optional<User> userOptional = userService.findById(userId);
 
         if (userOptional.isPresent()) {
-
             User user = userOptional.get();
             Role userRole = roleRepository.findByName("ROLE_ADMIN");
             user.setAdmin(true);
-
             user.setRoles(new HashSet<>(Collections.singleton(userRole)));
-
             userService.save(user);
-
         } else {
             throw new IllegalArgumentException("Nu exista user-ul cu id-ul " + userId);
         }
