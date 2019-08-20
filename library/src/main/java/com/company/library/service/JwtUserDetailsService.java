@@ -4,6 +4,7 @@ import com.company.library.DTO.Registration;
 import com.company.library.exceptions.EmailExistsException;
 import com.company.library.model.Role;
 import com.company.library.repository.RoleRepository;
+import com.company.library.repository.UserInterface;
 import com.company.library.repository.UserRepositoryInterface;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.GrantedAuthority;
