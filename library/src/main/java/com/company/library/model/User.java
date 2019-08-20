@@ -41,7 +41,9 @@ public class User {
             inverseJoinColumns = @JoinColumn(name = "role_id")
     )
     private Set<Role> roles;
-    
+
+    private boolean enabled;
+
     public Long getId() {
         return id;
     }
@@ -139,5 +141,13 @@ public class User {
         penalties.stream()
                 .filter(t->t.getPenaltyAddedDate().plusMonths(Penalty.numberOfMonthsPenaltyExist).isBefore(LocalDate.now()))
         .forEach(t-> penalties.remove(t));
+    }
+
+    public boolean isEnabled() {
+        return enabled;
+    }
+
+    public void setEnabled(boolean enabled) {
+        this.enabled = enabled;
     }
 }
