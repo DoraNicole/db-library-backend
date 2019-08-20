@@ -137,7 +137,7 @@ public class User {
     //delete old penalties that are not any more valid
     public void clearOldPenalties() {
         penalties.stream()
-                .filter(t->t.getPenaltyAddedDate().plusMonths(6l).isBefore(LocalDate.now()))
+                .filter(t->t.getPenaltyAddedDate().plusMonths(Penalty.numberOfMonthsPenaltyExist).isBefore(LocalDate.now()))
         .forEach(t-> penalties.remove(t));
     }
 }

@@ -16,6 +16,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
@@ -84,4 +85,8 @@ public class BookService implements BookServiceInterface {
         return new ResponseEntity<>(pagingSortingErrorResponse, HttpStatus.OK);
     }
 
+    @Override
+    public Optional<Book> findById(long book_id) {
+        return bookRepositoryInterface.findById(book_id);
+    }
 }

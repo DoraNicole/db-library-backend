@@ -55,4 +55,8 @@ public class AuthenticationController {
             throw new Exception("INVALID_CREDENTIALS", e);
         }
     }
+
+    @PostMapping("/reset-password")
+    public ResponseEntity<?> resetPassword(@RequestBody JwtRequest resetPasswordRequest){
+    }
 }
