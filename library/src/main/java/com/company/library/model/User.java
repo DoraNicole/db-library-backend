@@ -100,6 +100,7 @@ public class User {
         this.roles = roles;
     }
 
+
     @Override
     public String toString() {
         final StringBuilder sb = new StringBuilder("User{");

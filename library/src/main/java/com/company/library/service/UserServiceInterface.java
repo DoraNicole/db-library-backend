@@ -10,4 +10,5 @@ public interface UserServiceInterface {
     List<User> findAll();
     void save(User user);
     Optional<User> findById(Long userId);
+    User findUserByEmail(String email);
 }
