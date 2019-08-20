@@ -3,6 +3,9 @@ package com.company.library.model;
 import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
 import java.sql.Blob;
+import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Set;
 
 @Entity
@@ -27,6 +30,9 @@ public class User {
     private Blob img;
 
     private boolean isAdmin;
+
+    @OneToMany
+    private List<Penalty> penalties = new ArrayList<>();
 
     @ManyToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     @JoinTable(
@@ -94,6 +100,19 @@ public class User {
         isAdmin = admin;
     }
 
+      public List<Penalty> getPenalties() {
+        return penalties;
+    }
+
+    public void setPenalties(List<Penalty> penalties) {
+        this.penalties = penalties;
+    }
+
+    public void addPenalty(Penalty penalty){
+        this.penalties.add(penalty);
+    }
+
+
     @Override
     public String toString() {
         final StringBuilder sb = new StringBuilder("User{");
@@ -107,6 +126,13 @@ public class User {
         sb.append(", roles=").append(roles);
         sb.append('}');
         return sb.toString();
+    }
+
+    //delete old penalties that are not any more valid
+    public void clearOldPenalties() {
+        penalties.stream()
+                .filter(t->t.getPenaltyAddedDate().plusMonths(6l).isBefore(LocalDate.now()))
+        .forEach(t-> penalties.remove(t));
     }
     public Set<Role> getRoles() {
         return roles;
