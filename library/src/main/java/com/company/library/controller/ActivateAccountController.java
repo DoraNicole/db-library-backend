@@ -18,6 +18,7 @@ import java.net.URL;
 @RestController
 public class ActivateAccountController {
 
+
     private final UserService userService;
     private final VerificationTokenRepository verificationTokenRepository;
     private final EmailService emailService;

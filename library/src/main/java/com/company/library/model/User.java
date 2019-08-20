@@ -1,9 +1,6 @@
 package com.company.library.model;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
+import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
 import java.sql.Blob;
 import java.util.Set;
@@ -97,6 +94,20 @@ public class User {
         isAdmin = admin;
     }
 
+    @Override
+    public String toString() {
+        final StringBuilder sb = new StringBuilder("User{");
+        sb.append("id=").append(id);
+        sb.append(", firstName='").append(firstName).append('\'');
+        sb.append(", lastName='").append(lastName).append('\'');
+        sb.append(", email='").append(email).append('\'');
+        sb.append(", password='").append(password).append('\'');
+        sb.append(", img=").append(img);
+        sb.append(", isAdmin=").append(isAdmin);
+        sb.append(", roles=").append(roles);
+        sb.append('}');
+        return sb.toString();
+    }
     public Set<Role> getRoles() {
         return roles;
     }
@@ -111,42 +122,5 @@ public class User {
 
     public void setEnabled(boolean enabled) {
         this.enabled = enabled;
-    }
-
-    @Override
-    public String toString() {
-        final StringBuilder sb = new StringBuilder("User{");
-        sb.append("id=").append(id);
-        sb.append(", firstName='").append(firstName).append('\'');
-        sb.append(", lastName='").append(lastName).append('\'');
-        sb.append(", email='").append(email).append('\'');
-        sb.append(", password='").append(password).append('\'');
-        sb.append(", img=").append(img);
-        sb.append(", isAdmin=").append(isAdmin);
-        sb.append(", roles=").append(roles);
-        sb.append('}');
-        return sb.toString();
-    }
-    public Set<Role> getRoles() {
-        return roles;
-    }
-
-    public void setRoles(Set<Role> roles) {
-        this.roles = roles;
-    }
-
-    @Override
-    public String toString() {
-        final StringBuilder sb = new StringBuilder("User{");
-        sb.append("id=").append(id);
-        sb.append(", firstName='").append(firstName).append('\'');
-        sb.append(", lastName='").append(lastName).append('\'');
-        sb.append(", email='").append(email).append('\'');
-        sb.append(", password='").append(password).append('\'');
-        sb.append(", img=").append(img);
-        sb.append(", isAdmin=").append(isAdmin);
-        sb.append(", roles=").append(roles);
-        sb.append('}');
-        return sb.toString();
     }
 }
