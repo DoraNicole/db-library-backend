@@ -37,7 +37,7 @@ public class UserBookController {
         SimpleMailMessage message = new SimpleMailMessage();
         message.setTo(user.getEmail());
         message.setSubject("Book borrowing notification");
-        message.setText(String.format("Good choice, my friend. Enjoy your read!"));
+        message.setText(String.format("Good choice, my friend. Enjoy your read! You can return it until "+ userBook.getReturn_date().toString()));
         emailService.sendEmail(message);
     }
 
