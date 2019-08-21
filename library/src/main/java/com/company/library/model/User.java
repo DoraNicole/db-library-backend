@@ -31,7 +31,7 @@ public class User {
 
     private boolean isAdmin;
 
-    @OneToMany
+    @OneToMany(cascade = {CascadeType.ALL}) //automatically save penalties in database when we add them for a user
     private List<Penalty> penalties = new ArrayList<>();
 
     @ManyToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
