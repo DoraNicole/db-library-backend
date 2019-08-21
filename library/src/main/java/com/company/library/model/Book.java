@@ -1,8 +1,9 @@
 package com.company.library.model;
 
+
 import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
-
+import java.util.List;
 
 @Entity
 public class Book {
@@ -26,7 +27,8 @@ public class Book {
     private Integer year;
 
     @NotBlank
-    private String genre;
+    @OneToMany(fetch = FetchType.LAZY)
+    private List<Genre> genres;
 
     @OneToOne(fetch = FetchType.LAZY)
     private ImageModel img;
@@ -79,12 +81,12 @@ public class Book {
         this.year = year;
     }
 
-    public String getGenre() {
-        return genre;
+    public List<Genre> getGenre() {
+        return genres;
     }
 
-    public void setGenre(String genre) {
-        this.genre = genre;
+    public void setGenre(List<Genre> genres) {
+        this.genres = genres;
     }
 
     public ImageModel getImg() {
