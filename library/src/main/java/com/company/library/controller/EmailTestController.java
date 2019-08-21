@@ -21,7 +21,7 @@ public class EmailTestController {
     @GetMapping
     public void testEmail() {
         SimpleMailMessage msg = new SimpleMailMessage();
-        msg.setTo("amaliastefanescu0@gmail.com");
+        msg.setTo("andreirotaru1998@gmail.com");
         msg.setSubject("Test subject");
         msg.setText("Test body");
         emailService.sendEmail(msg);
