@@ -31,7 +31,7 @@ public class User {
 
     private boolean isAdmin;
 
-    @OneToMany
+    @OneToMany(cascade = CascadeType.ALL)
     private List<Penalty> penalties = new ArrayList<>();
 
     @ManyToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
@@ -132,7 +132,7 @@ public class User {
     public void clearOldPenalties() {
         penalties.stream()
                 .filter(t->t.getPenaltyAddedDate().plusMonths(Penalty.numberOfMonthsPenaltyExist).isBefore(LocalDate.now()))
-        .forEach(t-> penalties.remove(t));
+                .forEach(t-> penalties.remove(t));
     }
     public Set<Role> getRoles() {
         return roles;

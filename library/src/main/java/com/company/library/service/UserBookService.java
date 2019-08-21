@@ -4,12 +4,12 @@ import com.company.library.exceptions.UserHasPenaltiesException;
 import com.company.library.model.Penalty;
 import com.company.library.model.UserBook;
 import com.company.library.repository.UserBookRepositoryInterface;
-import org.apache.tomcat.jni.Local;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class UserBookService implements UserBookServiceInterface {
@@ -49,5 +49,10 @@ public class UserBookService implements UserBookServiceInterface {
 
 
         userBookRepositoryInterface.deleteById(userBookId);
+    }
+
+    @Override
+    public Optional<UserBook> findById(Long userId) {
+        return userBookRepositoryInterface.findById(userId);
     }
 }

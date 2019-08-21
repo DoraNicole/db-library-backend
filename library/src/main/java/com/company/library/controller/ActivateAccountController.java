@@ -71,5 +71,4 @@ public class ActivateAccountController {
 
         return "Your account was successfully activated!";
     }
-
 }
