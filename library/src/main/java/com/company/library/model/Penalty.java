@@ -16,13 +16,12 @@ public class Penalty {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
 
-    @NotBlank
     private LocalDate penaltyAddedDate;
 
 
     public Penalty(){ }
 
-    public Penalty(@NotBlank LocalDate penaltyAddedDate) {
+    public Penalty(LocalDate penaltyAddedDate) {
         this.penaltyAddedDate = penaltyAddedDate;
     }
 
