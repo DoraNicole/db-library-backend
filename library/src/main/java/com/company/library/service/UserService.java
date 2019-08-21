@@ -4,8 +4,10 @@ import com.company.library.DTO.Registration;
 import com.company.library.exceptions.EmailExistsException;
 import com.company.library.model.Role;
 import com.company.library.model.User;
+import com.company.library.model.VerificationToken;
 import com.company.library.repository.RoleRepository;
 import com.company.library.repository.UserRepositoryInterface;
+import com.company.library.repository.VerificationTokenRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -96,11 +98,11 @@ public class UserService implements UserServiceInterface {
 
 
     public User saveNewPassword(String email, String password) {
-
         User foundUser = userRepository.findByEmail(email);
         foundUser.setPassword(bcryptEncoder.encode(password));
         return userDao.save(foundUser);
-
     }
+
+
 
 }
