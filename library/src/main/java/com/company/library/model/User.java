@@ -99,6 +99,13 @@ public class User {
     public void setAdmin(boolean admin) {
         isAdmin = admin;
     }
+  
+    public Set<Role> getRoles() {
+        return roles;
+    }
+
+    public void setRoles(Set<Role> roles) {
+        this.roles = roles;
 
       public List<Penalty> getPenalties() {
         return penalties;
@@ -110,6 +117,7 @@ public class User {
 
     public void addPenalty(Penalty penalty){
         this.penalties.add(penalty);
+
     }
 
 
@@ -134,13 +142,8 @@ public class User {
                 .filter(t->t.getPenaltyAddedDate().plusMonths(Penalty.numberOfMonthsPenaltyExist).isBefore(LocalDate.now()))
         .forEach(t-> penalties.remove(t));
     }
-    public Set<Role> getRoles() {
-        return roles;
-    }
+  
 
-    public void setRoles(Set<Role> roles) {
-        this.roles = roles;
-    }
 
     public boolean isEnabled() {
         return enabled;
