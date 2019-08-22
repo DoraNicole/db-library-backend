@@ -52,7 +52,7 @@ public class UserBookService implements UserBookServiceInterface {
         userBookRepositoryInterface.deleteById(userBookId);
     }
 
-    @Scheduled(cron = "*/10 * * * *")
+    @Scheduled(cron = "0 * * * * ?")
     public void sendReminder(){
         List<UserBook> list=userBookRepositoryInterface.remindUsers();
         for(UserBook u: list) {
