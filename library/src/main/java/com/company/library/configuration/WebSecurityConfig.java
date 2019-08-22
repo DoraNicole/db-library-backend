@@ -89,15 +89,12 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .sessionCreationPolicy(SessionCreationPolicy.STATELESS);
 
         httpSecurity.cors();
-
         httpSecurity.csrf().disable();
 
 
         httpSecurity.addFilterBefore(jwtRequestFilter, UsernamePasswordAuthenticationFilter.class);
 
-
     }
-
 
 
 }

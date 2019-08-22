@@ -27,8 +27,7 @@ public class Book {
     private Integer year;
 
     @NotBlank
-    @OneToMany(fetch = FetchType.LAZY)
-    private List<Genre> genres;
+    private String genres;
 
     @OneToOne(fetch = FetchType.LAZY)
     private ImageModel img;
@@ -81,11 +80,11 @@ public class Book {
         this.year = year;
     }
 
-    public List<Genre> getGenre() {
+    public String getGenre() {
         return genres;
     }
 
-    public void setGenre(List<Genre> genres) {
+    public void setGenre(String genres) {
         this.genres = genres;
     }
 
