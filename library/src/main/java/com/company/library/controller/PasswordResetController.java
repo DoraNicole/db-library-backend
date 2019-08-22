@@ -19,6 +19,7 @@ import java.net.URL;
 public class PasswordResetController {
 
     private boolean link = false;
+    private static final String linkFrontend = "http://localhost:4200";
 
     @Autowired
     private UserService userService;
@@ -42,6 +43,7 @@ public class PasswordResetController {
     @GetMapping("/forgotpassword")
     public void forgotPassword(@RequestBody PasswordForgottenDTO passwordForgottenDTO, HttpServletRequest request) {
         link = false;
+
         if (link == false) {
             if (userRepositoryInterface.findByEmail(passwordForgottenDTO.getEmail()) != null) {
 
@@ -50,7 +52,8 @@ public class PasswordResetController {
 
                 URL url = null;
                 try {
-                    url = new URL(request.getRequestURL().toString().replace("/forgotpassword", "") + "/resetpassword?reset=" + random);
+                    //url = new URL(request.getRequestURL().toString().replace("/forgotpassword", "") + "/resetpassword?random=" + random);
+                    url = new URL(linkFrontend+ "/resetpassword?random=" + random);
                 } catch (MalformedURLException e) {
                     e.printStackTrace();
                 }
