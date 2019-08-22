@@ -1,6 +1,7 @@
 package com.company.library.controller;
 
 import com.company.library.DTO.Registration;
+import com.company.library.exceptions.EmailExistsException;
 import com.company.library.model.User;
 import com.company.library.model.VerificationToken;
 import com.company.library.repository.VerificationTokenRepository;
@@ -32,7 +33,7 @@ public class ActivateAccountController {
 
     @PostMapping("/register")
     @Transactional
-    public void registerUserAccount(@RequestBody Registration userDto, HttpServletRequest request) {
+    public User registerUserAccount(@RequestBody Registration userDto, HttpServletRequest request) throws EmailExistsException {
         User registered = userService.registerNewUserAccount(userDto);
         VerificationToken token = new VerificationToken(registered);
         VerificationToken savedToken = verificationTokenRepository.save(token);
@@ -49,6 +50,7 @@ public class ActivateAccountController {
         message.setSubject("Welcome to our library platform!");
         message.setText(String.format("Please click the following link to confirm your account activation : %s", url));
         emailService.sendEmail(message);
+        return registered;
     }
 
     @GetMapping("/registerConfirm")
