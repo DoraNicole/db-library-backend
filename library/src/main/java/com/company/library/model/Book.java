@@ -26,12 +26,20 @@ public class Book {
 
     private Integer year;
 
-    @NotBlank
-    @OneToMany(fetch = FetchType.LAZY)
-    private List<Genre> genres;
+//    @NotBlank
+//    @OneToMany(fetch = FetchType.LAZY)
+    private String genres;
 
     @OneToOne(fetch = FetchType.LAZY)
     private ImageModel img;
+
+    @OneToMany(fetch = FetchType.LAZY)
+    private List<Rating> ratings;
+
+
+
+
+
 
     public Long getId() {
         return id;
@@ -81,11 +89,11 @@ public class Book {
         this.year = year;
     }
 
-    public List<Genre> getGenre() {
+    public String getGenre() {
         return genres;
     }
 
-    public void setGenre(List<Genre> genres) {
+    public void setGenre(String genres) {
         this.genres = genres;
     }
 
@@ -95,5 +103,14 @@ public class Book {
 
     public void setImg(ImageModel img) {
         this.img = img;
+    }
+
+
+    public List<Rating> getRatings() {
+        return ratings;
+    }
+
+    public void setRatings(List<Rating> ratings) {
+        this.ratings = ratings;
     }
 }
