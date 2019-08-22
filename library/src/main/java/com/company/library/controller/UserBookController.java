@@ -32,6 +32,7 @@ public class UserBookController {
 
     @PostMapping("/addUserBook")
     public void addUserBook(@RequestBody UserBook userBook) throws UserHasPenaltiesException {
+
         userBookService.addUserBook(userBook);
         User user= userBook.getUser();
         SimpleMailMessage message = new SimpleMailMessage();
@@ -39,6 +40,12 @@ public class UserBookController {
         message.setSubject("Book borrowing notification");
         message.setText(String.format("Good choice, my friend. Enjoy your read! You can return it until "+ userBook.getReturn_date().toString()));
         emailService.sendEmail(message);
+
+    }
+
+    @GetMapping("/reminder")
+    public void reminder(){
+        userBookService.sendReminder();
     }
 
     @DeleteMapping("/removeUserBook/{id}")
