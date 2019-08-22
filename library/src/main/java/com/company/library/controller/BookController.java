@@ -5,14 +5,13 @@ import com.company.library.model.ResponsePageList;
 import com.company.library.service.BookServiceInterface;
 import com.company.library.service.UserServiceInterface;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.beans.support.PagedListHolder;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.*;
 
 @RestController
-@CrossOrigin(origins = "http://localhost:4200")
 public class BookController {
 
     @Autowired
@@ -32,7 +31,7 @@ public class BookController {
         bookService.addBook(book);
     }
 
-    @PreAuthorize("hasRole('ADMIN')")
+    //@PreAuthorize("hasRole('ADMIN')")
     @DeleteMapping("/remove/{id}")
     public void removeBook(@PathVariable(value = "id") Long id) {
         bookService.remove(id);
@@ -44,13 +43,13 @@ public class BookController {
     }
 
     @GetMapping("/paginatedBooks")
-    public ResponsePageList findPaginatedBooks(
+    public ResponseEntity<ResponsePageList> findPaginatedBooks(
             @RequestParam("orderBy") String orderBy,
             @RequestParam("direction") String direction,
             @RequestParam("page") int page,
             @RequestParam("size") int size,
             @RequestParam("query") String query
     ) {
-        return bookService.findPaginatedBooks(orderBy, direction, page, size, query);
+        return new ResponseEntity<>(bookService.findPaginatedBooks(orderBy, direction, page, size, query), HttpStatus.OK);
     }
 }

@@ -31,7 +31,7 @@ public class User {
 
     private boolean isAdmin;
 
-    @OneToMany(cascade = {CascadeType.ALL}) //automatically save penalties in database when we add them for a user
+    @OneToMany(cascade = CascadeType.ALL)
     private List<Penalty> penalties = new ArrayList<>();
 
     @ManyToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
@@ -99,7 +99,41 @@ public class User {
     public void setAdmin(boolean admin) {
         isAdmin = admin;
     }
-  
+
+      public List<Penalty> getPenalties() {
+        return penalties;
+    }
+
+    public void setPenalties(List<Penalty> penalties) {
+        this.penalties = penalties;
+    }
+
+    public void addPenalty(Penalty penalty){
+        this.penalties.add(penalty);
+    }
+
+
+    @Override
+    public String toString() {
+        final StringBuilder sb = new StringBuilder("User{");
+        sb.append("id=").append(id);
+        sb.append(", firstName='").append(firstName).append('\'');
+        sb.append(", lastName='").append(lastName).append('\'');
+        sb.append(", email='").append(email).append('\'');
+        sb.append(", password='").append(password).append('\'');
+        sb.append(", img=").append(img);
+        sb.append(", isAdmin=").append(isAdmin);
+        sb.append(", roles=").append(roles);
+        sb.append('}');
+        return sb.toString();
+    }
+
+    //delete old penalties that are not any more valid
+    public void clearOldPenalties() {
+        penalties.stream()
+                .filter(t->t.getPenaltyAddedDate().plusMonths(Penalty.numberOfMonthsPenaltyExist).isBefore(LocalDate.now()))
+                .forEach(t-> penalties.remove(t));
+    }
     public Set<Role> getRoles() {
         return roles;
     }
@@ -108,49 +142,11 @@ public class User {
         this.roles = roles;
     }
 
-        public List<Penalty> getPenalties() {
-            return penalties;
-        }
-
-        public void setPenalties (List < Penalty > penalties) {
-            this.penalties = penalties;
-        }
-
-        public void addPenalty (Penalty penalty){
-            this.penalties.add(penalty);
-
-        }
-
-
-        @Override
-        public String toString () {
-            final StringBuilder sb = new StringBuilder("User{");
-            sb.append("id=").append(id);
-            sb.append(", firstName='").append(firstName).append('\'');
-            sb.append(", lastName='").append(lastName).append('\'');
-            sb.append(", email='").append(email).append('\'');
-            sb.append(", password='").append(password).append('\'');
-            sb.append(", img=").append(img);
-            sb.append(", isAdmin=").append(isAdmin);
-            sb.append(", roles=").append(roles);
-            sb.append('}');
-            return sb.toString();
-        }
-
-        //delete old penalties that are not any more valid
-        public void clearOldPenalties () {
-            penalties.stream()
-                    .filter(t -> t.getPenaltyAddedDate().plusMonths(Penalty.numberOfMonthsPenaltyExist).isBefore(LocalDate.now()))
-                    .forEach(t -> penalties.remove(t));
-        }
-
-
-        public boolean isEnabled () {
-            return enabled;
-        }
-
-        public void setEnabled ( boolean enabled){
-            this.enabled = enabled;
-        }
+    public boolean isEnabled() {
+        return enabled;
     }
 
+    public void setEnabled(boolean enabled) {
+        this.enabled = enabled;
+    }
+}
