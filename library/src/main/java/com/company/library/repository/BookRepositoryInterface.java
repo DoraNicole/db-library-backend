@@ -9,5 +9,6 @@ import org.springframework.stereotype.Repository;
 public interface BookRepositoryInterface extends JpaRepository<Book, Long>, PagingAndSortingRepository<Book, Long> {
 
     public Book findBookById(Long id);
-
+    public Book findBookByIsbn(String isbn);
+    public Book findBookByTitleAndAuthor(String title, String author);
 }

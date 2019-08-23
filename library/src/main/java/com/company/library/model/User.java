@@ -134,6 +134,8 @@ public class User {
                 .filter(t->t.getPenaltyAddedDate().plusMonths(Penalty.numberOfMonthsPenaltyExist).isBefore(LocalDate.now()))
                 .forEach(t-> penalties.remove(t));
     }
+
+
     public Set<Role> getRoles() {
         return roles;
     }

@@ -39,6 +39,7 @@ public class BookController {
 
     @GetMapping("/searchBook")
     public List<Book> searchBook(@RequestParam("query") String query) {
+
         return bookService.searchBook(query);
     }
 
