@@ -26,7 +26,7 @@ public class BookController {
     }
 
     //@PreAuthorize("hasRole('ADMIN')")
-    @PostMapping("/add")
+    @PostMapping("/addbook")
     public void addBook(@RequestBody Book book) {
         bookService.addBook(book);
     }

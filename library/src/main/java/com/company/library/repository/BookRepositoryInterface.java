@@ -8,4 +8,6 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface BookRepositoryInterface extends JpaRepository<Book, Long>, PagingAndSortingRepository<Book, Long> {
 
+    public Book findBookById(Long id);
+
 }

@@ -2,9 +2,7 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/library/.mvn/.mvn.iml" filepath="$PROJECT_DIR$/library/.mvn/.mvn.iml" />
-      <module fileurl="file://$PROJECT_DIR$/library/src/main/main.iml" filepath="$PROJECT_DIR$/library/src/main/main.iml" />
-      <module fileurl="file://$PROJECT_DIR$/library/src/test/test.iml" filepath="$PROJECT_DIR$/library/src/test/test.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/db-library-backend.iml" filepath="$PROJECT_DIR$/.idea/db-library-backend.iml" />
     </modules>
   </component>
 </project>

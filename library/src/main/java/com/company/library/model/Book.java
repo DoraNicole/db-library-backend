@@ -26,11 +26,20 @@ public class Book {
 
     private Integer year;
 
-    @NotBlank
+//    @NotBlank
+//    @OneToMany(fetch = FetchType.LAZY)
     private String genres;
 
     @OneToOne(fetch = FetchType.LAZY)
     private ImageModel img;
+
+    @OneToMany(fetch = FetchType.LAZY)
+    private List<Rating> ratings;
+
+
+
+
+
 
     public Long getId() {
         return id;
@@ -94,5 +103,14 @@ public class Book {
 
     public void setImg(ImageModel img) {
         this.img = img;
+    }
+
+
+    public List<Rating> getRatings() {
+        return ratings;
+    }
+
+    public void setRatings(List<Rating> ratings) {
+        this.ratings = ratings;
     }
 }
