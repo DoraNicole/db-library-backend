@@ -94,7 +94,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                         exceptionHandling().authenticationEntryPoint(jwtAuthenticationEntryPoint).and().sessionManagement()
                 .sessionCreationPolicy(SessionCreationPolicy.STATELESS);
     
-        httpSecurity.cors().disable();
+        httpSecurity.cors();
         httpSecurity.csrf().disable();
 
         // Add a filter to validate the tokens with every request
