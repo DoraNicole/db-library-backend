@@ -5,6 +5,7 @@ import com.company.library.enums.OrderBy;
 import com.company.library.exceptions.PaginationSortingException;
 import com.company.library.exceptions.PagingSortingErrorResponse;
 import com.company.library.model.Book;
+import com.company.library.model.Rating;
 import com.company.library.model.ResponsePageList;
 import com.company.library.repository.BookRepositoryInterface;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -76,12 +77,35 @@ public class BookService implements BookServiceInterface {
 
     }
 
+    @Override
+    public Book findBookByTitleAndAuthor(String title, String author) {
+        return bookRepositoryInterface.findBookByTitleAndAuthor(title, author);
+    }
+
     @ExceptionHandler(PaginationSortingException.class)
     public ResponseEntity<PagingSortingErrorResponse> exceptionHandler(Exception ex) {
         PagingSortingErrorResponse pagingSortingErrorResponse = new PagingSortingErrorResponse();
         pagingSortingErrorResponse.setErrorCode(HttpStatus.PRECONDITION_FAILED.value());
         pagingSortingErrorResponse.setMessage(ex.getMessage());
         return new ResponseEntity<>(pagingSortingErrorResponse, HttpStatus.OK);
+    }
+
+    @Override
+    public Book findBookByIsbn(String isbn) {
+        return bookRepositoryInterface.findBookByIsbn(isbn);
+    }
+
+
+    public double setAverageStars(Book book) {
+        book = findBookByIsbn(book.getIsbn());
+        double result = 0;
+        List<Rating> ratings = book.getRatings();
+        int number = ratings.size();
+        for (Rating i : ratings) {
+            result = i.getValue() + result;
+        }
+
+        return result / number;
     }
 
 }

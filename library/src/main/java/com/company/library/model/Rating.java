@@ -12,8 +12,8 @@ public class Rating {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     Integer id;;
 
-    int value;
-    String description;
+    private double value;
+    private String description;
 
     public Integer getId() {
         return id;
@@ -23,11 +23,11 @@ public class Rating {
         this.id = id;
     }
 
-    public int getValue() {
+    public double getValue() {
         return value;
     }
 
-    public void setValue(int value) {
+    public void setValue(double value) {
         this.value = value;
     }
 
