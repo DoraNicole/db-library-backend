@@ -5,11 +5,10 @@ import com.company.library.model.User;
 import com.company.library.repository.RoleRepository;
 import com.company.library.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.Collections;
 import java.util.HashSet;
@@ -30,6 +29,11 @@ public class UserController {
         return userService.findAll();
     }
 
+    @GetMapping("/findUserByEmail")
+    ResponseEntity<User> findUserByEmail(@RequestParam("email") String email) {
+        return new ResponseEntity<>(userService.findUserByEmail(email), HttpStatus.OK);
+    }
+
     @PreAuthorize("hasRole('ADMIN')")
     @PostMapping("/changeRole/{id}")
     public void changeRole(@PathVariable(value = "id") Long userId) {
@@ -42,7 +46,7 @@ public class UserController {
             user.setRoles(new HashSet<>(Collections.singleton(userRole)));
             userService.save(user);
         } else {
-            throw new IllegalArgumentException("Nu exista user-ul cu id-ul " + userId);
+            throw new IllegalArgumentException("The user with this id: " + userId + " does not exist!");
         }
     }
 
