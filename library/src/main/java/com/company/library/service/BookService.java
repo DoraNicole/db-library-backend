@@ -95,6 +95,11 @@ public class BookService implements BookServiceInterface {
         return bookRepositoryInterface.findBookByIsbn(isbn);
     }
 
+    @Override
+    public Book findBookById(Long id) {
+        return bookRepositoryInterface.findBookById(id);
+    }
+
 
     public double setAverageStars(Book book) {
         book = findBookByIsbn(book.getIsbn());
