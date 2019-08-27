@@ -42,8 +42,7 @@ public class Book {
 
     private double averageStars;
 
-
-
+    private int stock;
 
     public Long getId() {
         return id;
@@ -121,6 +120,22 @@ public class Book {
     public double getAverageStars() {
         averageStars = setAverageStars();
         return averageStars;
+    }
+
+    public int getStock() {
+        return stock;
+    }
+
+    public void setStock(int stock) {
+        this.stock = stock;
+    }
+
+    public void addStock(){
+        this.stock++;
+    }
+
+    public void decreseStock(){
+        this.stock--;
     }
 
     public double setAverageStars() {
