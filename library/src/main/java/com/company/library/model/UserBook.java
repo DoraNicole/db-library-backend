@@ -1,5 +1,7 @@
 package com.company.library.model;
 
+import org.hibernate.annotations.Cascade;
+
 import javax.persistence.*;
 import java.time.LocalDate;
 
@@ -13,7 +15,7 @@ public class UserBook {
     @ManyToOne(fetch = FetchType.EAGER)
     private User user;
 
-    @ManyToOne(fetch = FetchType.EAGER)
+     @ManyToOne(fetch = FetchType.EAGER)
     private Book book;
 
     private LocalDate return_date;

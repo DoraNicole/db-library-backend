@@ -1,5 +1,6 @@
 package com.company.library.controller;
 
+import com.company.library.exceptions.BookOutOfStock;
 import com.company.library.exceptions.UserHasPenaltiesException;
 import com.company.library.model.User;
 import com.company.library.model.UserBook;
@@ -31,7 +32,7 @@ public class UserBookController {
     }
 
     @PostMapping("/addUserBook")
-    public void addUserBook(@RequestBody UserBook userBook) throws UserHasPenaltiesException {
+    public void addUserBook(@RequestBody UserBook userBook) throws UserHasPenaltiesException, BookOutOfStock {
 
         userBookService.addUserBook(userBook);
         User user= userBook.getUser();
