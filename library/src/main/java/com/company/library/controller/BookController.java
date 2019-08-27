@@ -53,4 +53,9 @@ public class BookController {
     ) {
         return new ResponseEntity<>(bookService.findPaginatedBooks(orderBy, direction, page, size, query), HttpStatus.OK);
     }
+
+    @GetMapping("/searchBookById")
+    public Book searchBookById(@RequestParam("id") Long id){
+        return bookService.findBookById(id);
+    }
 }
