@@ -146,10 +146,15 @@ public class Book {
     public double setAverageStars() {
         double result = 0d;
         List<Rating> ratings = getRatings();
-        int number = ratings.size();
-        for (Rating i : ratings) {
-            result = i.getValue() + result;
+        if(ratings.isEmpty()){
+            return 0d;
+        }else {
+            int number = ratings.size();
+            for (Rating i : ratings) {
+                result = i.getValue() + result;
+            }
+            return (result / number);
         }
-        return (result / number);
+
     }
 }
