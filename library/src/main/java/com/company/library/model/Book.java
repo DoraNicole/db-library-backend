@@ -17,7 +17,7 @@ public class Book {
     @NotBlank
     private String title;
 
-    @ManyToMany
+    @OneToMany(fetch = FetchType.LAZY,cascade = CascadeType.ALL,orphanRemoval = true)
     private List<Author> authors;
 
     @NotBlank
@@ -25,7 +25,7 @@ public class Book {
 
     private Integer year;
 
-    @ManyToMany
+    @OneToMany(fetch = FetchType.LAZY,cascade = CascadeType.ALL,orphanRemoval = true)
     private List<Genre> genres;
 
     @OneToOne(fetch = FetchType.LAZY,cascade = CascadeType.ALL,orphanRemoval = true)
@@ -33,6 +33,17 @@ public class Book {
 
     @OneToMany(fetch = FetchType.LAZY,cascade = CascadeType.ALL)
     private List<Rating> ratings;
+
+    @Column(columnDefinition="TEXT")
+    private String description;
+
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
+    }
 
     public Long getId() {
         return id;
