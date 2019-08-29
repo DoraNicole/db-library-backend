@@ -2,6 +2,7 @@ package com.company.library.controller;
 
 import com.company.library.exceptions.BookOutOfStock;
 import com.company.library.exceptions.UserHasPenaltiesException;
+import com.company.library.model.Book;
 import com.company.library.model.User;
 import com.company.library.model.UserBook;
 import com.company.library.service.EmailService;
@@ -11,6 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @RestController
@@ -54,4 +56,16 @@ public class UserBookController {
         userBookService.remove(id);
     }
 
+    @GetMapping("/getBorrowedBooks")
+    public List<Book> getBorrowedBooks(@RequestParam("id") Long id){
+        List<Book> returnList = new ArrayList<>();
+
+        //search in all user-book relations for the users who has the given id and add in return list their book
+        userBookService.getUserBooks().forEach(t->{
+
+        if(t.getUser().getId() == id)
+            returnList.add(t.getBook());
+    });
+        return returnList;
+    }
 }

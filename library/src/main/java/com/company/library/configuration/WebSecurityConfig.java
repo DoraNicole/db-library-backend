@@ -88,7 +88,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .authorizeRequests()
                 .antMatchers("/authenticate", "/register", "/allusers", "/books", "/registerConfirm",
                         "/addUserBook","/reminder", "/forgotpassword", "/resetpassword","/paginatedBooks",
-                        "/book/addrating", "/addbook", "/bookrating", "/searchBookById").permitAll().
+                        "/book/addrating", "/addbook", "/bookrating", "/searchBookById","/getBorrowedBooks","/userBooks").permitAll().
                 // all other requests need to be authenticated
                         anyRequest().authenticated().and().
                 // make sure we use stateless session; session won't be used to
@@ -96,7 +96,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                         exceptionHandling().authenticationEntryPoint(jwtAuthenticationEntryPoint).and().sessionManagement()
                 .sessionCreationPolicy(SessionCreationPolicy.STATELESS);
     
-        httpSecurity.cors().disable();
+        httpSecurity.cors();
         httpSecurity.csrf().disable();
 
         // Add a filter to validate the tokens with every request

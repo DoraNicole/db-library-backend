@@ -3,10 +3,12 @@ package com.company.library.controller;
 import com.company.library.model.Book;
 import com.company.library.model.ResponsePageList;
 import com.company.library.service.BookServiceInterface;
+import com.company.library.service.UserBookServiceInterface;
 import com.company.library.service.UserServiceInterface;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.*;
@@ -20,12 +22,15 @@ public class BookController {
     @Autowired
     private UserServiceInterface userService;
 
+    @Autowired
+    private UserBookServiceInterface userBookService;
+
     @GetMapping("/books")
     public List<Book> get() {
         return bookService.getBooks();
     }
 
-    //@PreAuthorize("hasRole('ADMIN')")
+    @PreAuthorize("hasRole('ADMIN')")
     @PostMapping("/addbook")
     public void addBook(@RequestBody Book book) {
         bookService.addBook(book);
