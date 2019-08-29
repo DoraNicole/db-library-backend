@@ -145,8 +145,6 @@ public class Book {
         for (Rating i : ratings) {
             result = i.getValue() + result;
         }
-
-
         return (result / number);
     }
 }
