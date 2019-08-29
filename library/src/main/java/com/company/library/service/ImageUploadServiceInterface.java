@@ -9,6 +9,7 @@ import java.util.List;
 public interface ImageUploadServiceInterface {
 
     List<ImageModel> getImages();
-    void removeImage(Long imageModelId);
+    void removeImageById(Long id);
+    void removeImage(ImageModel image);
     ImageModel uploadImage(MultipartFile file) throws IOException;
 }

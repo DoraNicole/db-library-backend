@@ -21,8 +21,13 @@ public class ImageUploadService implements ImageUploadServiceInterface {
     }
 
     @Override
-    public void removeImage(Long imageModelId) {
-        imageUploadRepository.deleteById(imageModelId);
+    public void removeImageById(Long id) {
+        imageUploadRepository.deleteById(id);
+    }
+
+    @Override
+    public void removeImage(ImageModel image) {
+        imageUploadRepository.delete(image);
     }
 
     @Override

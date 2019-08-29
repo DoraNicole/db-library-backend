@@ -2,12 +2,11 @@ package com.company.library.model;
 import javax.persistence.*;
 
 @Entity
-public class Genre {
+public class Author {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-
     private String name;
 
     public Long getId() {
@@ -25,4 +24,5 @@ public class Genre {
     public void setName(String name) {
         this.name = name;
     }
+
 }

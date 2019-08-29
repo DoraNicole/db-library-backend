@@ -4,53 +4,66 @@ import com.company.library.enums.Direction;
 import com.company.library.enums.OrderBy;
 import com.company.library.exceptions.PaginationSortingException;
 import com.company.library.exceptions.PagingSortingErrorResponse;
-import com.company.library.model.Book;
-import com.company.library.model.Rating;
+import com.company.library.model.Author;
 import com.company.library.model.ResponsePageList;
-import com.company.library.repository.BookRepositoryInterface;
-import com.company.library.repository.RatingRepository;
+import com.company.library.repository.AuthorRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.support.PagedListHolder;
 import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
-
-@Service
-public class RatingService implements RatingServiceInterface {
-
-
-    @Autowired
-    private RatingRepository ratingService;
+@RestController
+public class AuthorService implements AuthorServiceInterface {
 
     @Autowired
-    BookRepositoryInterface bookRepositoryInterface;
+    private AuthorRepository authorRepository;
 
     @Override
-    public void addRating(Rating rating, Long id) {
-        Book book = bookRepositoryInterface.findBookById(id);
-        book.getRatings().add(rating);
-        bookRepositoryInterface.saveAndFlush(book);
+    public List<Author> getAuthorsList() {
+        return authorRepository.findAll();
     }
 
     @Override
-    public void deleteRating(Rating rating) {
-        ratingService.delete(rating);
+    public Author getAuthorByName(String query) {
+        return authorRepository.findAll().stream().filter(author -> author.getName().toLowerCase().contains(query.toLowerCase())).findFirst().orElse(null);
     }
 
     @Override
-    public void deleteRatingById(Long id) {
-        ratingService.deleteById(id);
+    public List<Author> addAuthors(List<Author> authors) {
+        return authorRepository.saveAll(authors);
     }
 
     @Override
-    public ResponsePageList<Rating> findRatingByUserNameOrLastName(String orderBy, String direction, int page, int size, String query) {
+    public boolean checkIfAuthorExist(String query) {
+        return authorRepository.findAll().stream().anyMatch(author -> author.getName().toLowerCase().contains(query.toLowerCase()));
+    }
+
+    @Override
+    public void deleteAuthor(Author author) {
+        authorRepository.delete(author);
+    }
+
+    @Override
+    public Author getAuthorById(Long id) {
+        return authorRepository.getOne(id);
+    }
+
+    @Override
+    public void deleteAuthorById(Long id) {
+        authorRepository.deleteById(id);
+    }
+
+    @Override
+    public ResponsePageList<Author> findAuthorByName(String orderBy, String direction, int page, int size, String query) {
 
         Sort sort = null;
         if (direction.equals("ASC")) {
@@ -67,14 +80,13 @@ public class RatingService implements RatingServiceInterface {
             throw new PaginationSortingException("Invalid orderBy condition");
         }
 
-        Predicate<Rating> containAuthorFirstName = rating ->  rating.getUser().getFirstName().equalsIgnoreCase(query);
-        Predicate<Rating> containAuthorLastName = rating ->  rating.getUser().getLastName().equalsIgnoreCase(query);
-        List<Rating> ratingList = ratingService.findAll(sort).stream().filter(containAuthorFirstName.or(containAuthorLastName)).collect(Collectors.toList());
+        Predicate<Author> containName = author -> author.getName().equalsIgnoreCase(query);
+        List<Author> authorList = authorRepository.findAll(sort).stream().filter(containName).collect(Collectors.toList());
 
-        PagedListHolder<Rating> pagedListHolder = new PagedListHolder<>(ratingList);
+        PagedListHolder<Author> pagedListHolder = new PagedListHolder<>(authorList);
         pagedListHolder.setPageSize(size);
         pagedListHolder.setPage(page);
-        ResponsePageList<Rating> response = new ResponsePageList<>();
+        ResponsePageList<Author> response = new ResponsePageList<>();
         response.setNrOfElements(pagedListHolder.getNrOfElements());
         response.setPageList(pagedListHolder.getPageList());
         return response;
@@ -88,5 +100,4 @@ public class RatingService implements RatingServiceInterface {
         pagingSortingErrorResponse.setMessage(ex.getMessage());
         return new ResponseEntity<>(pagingSortingErrorResponse, HttpStatus.OK);
     }
-
 }

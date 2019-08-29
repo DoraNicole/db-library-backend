@@ -19,6 +19,7 @@ public class BookController {
     @Autowired
     private BookServiceInterface bookService;
 
+
     @Autowired
     private UserServiceInterface userService;
 
@@ -30,8 +31,10 @@ public class BookController {
         return bookService.getBooks();
     }
 
-    @PreAuthorize("hasRole('ADMIN')")
-    @PostMapping("/addbook")
+
+    //@PreAuthorize("hasRole('ADMIN')")
+    @PostMapping("/addBook")
+
     public void addBook(@RequestBody Book book) {
         bookService.addBook(book);
     }
@@ -42,14 +45,8 @@ public class BookController {
         bookService.remove(id);
     }
 
-    @GetMapping("/searchBook")
-    public List<Book> searchBook(@RequestParam("query") String query) {
-
-        return bookService.searchBook(query);
-    }
-
     @GetMapping("/paginatedBooks")
-    public ResponseEntity<ResponsePageList> findPaginatedBooks(
+    public ResponseEntity<ResponsePageList<Book>> findPaginatedBooks(
             @RequestParam("orderBy") String orderBy,
             @RequestParam("direction") String direction,
             @RequestParam("page") int page,
