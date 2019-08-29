@@ -2,9 +2,9 @@ package com.company.library.model;
 
 import java.util.List;
 
-public class ResponsePageList {
+public class ResponsePageList<T> {
     private int nrOfElements;
-    private List<Book> pageList;
+    private List<T> pageList;
 
     public int getNrOfElements() {
         return nrOfElements;
@@ -14,11 +14,11 @@ public class ResponsePageList {
         this.nrOfElements = nrOfElements;
     }
 
-    public List<Book> getPageList() {
+    public List<T> getPageList() {
         return pageList;
     }
 
-    public void setPageList(List<Book> pageList) {
+    public void setPageList(List<T> pageList) {
         this.pageList = pageList;
     }
 }

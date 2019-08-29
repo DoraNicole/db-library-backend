@@ -27,4 +27,14 @@ public class ImageUploadController {
         return imageUploadService.getImages();
     }
 
+    @DeleteMapping("/deleteImage")
+    public void deleteImage(@RequestBody ImageModel image){
+        imageUploadService.removeImage(image);
+    }
+
+    @DeleteMapping("/removeImage/{id}")
+    public void removeBook(@PathVariable(value = "id") Long id) {
+        imageUploadService.removeImageById(id);
+    }
+
 }

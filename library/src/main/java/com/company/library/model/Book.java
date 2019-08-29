@@ -1,13 +1,8 @@
 package com.company.library.model;
 
-
-import com.company.library.service.BookServiceInterface;
-import org.springframework.beans.factory.annotation.Autowired;
-
 import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
 import java.util.List;
-import java.util.OptionalDouble;
 
 @Entity
 public class Book {
@@ -22,28 +17,22 @@ public class Book {
     @NotBlank
     private String title;
 
-    @NotBlank
-    private String author;
+    @ManyToMany
+    private List<Author> authors;
 
     @NotBlank
     private String publishingHouse;
 
     private Integer year;
 
-//    @NotBlank
-//    @OneToMany(fetch = FetchType.LAZY)
-    private String genres;
+    @ManyToMany
+    private List<Genre> genres;
 
-    @OneToOne(fetch = FetchType.LAZY)
+    @OneToOne(fetch = FetchType.LAZY,cascade = CascadeType.ALL,orphanRemoval = true)
     private ImageModel img;
 
     @OneToMany(fetch = FetchType.LAZY,cascade = CascadeType.ALL)
     private List<Rating> ratings;
-
-    private double averageStars;
-
-
-
 
     public Long getId() {
         return id;
@@ -69,12 +58,12 @@ public class Book {
         this.title = title;
     }
 
-    public String getAuthor() {
-        return author;
+    public List<Author> getAuthors() {
+        return authors;
     }
 
-    public void setAuthor(String author) {
-        this.author = author;
+    public void setAuthors(List<Author> authors) {
+        this.authors = authors;
     }
 
     public String getPublishingHouse() {
@@ -101,7 +90,6 @@ public class Book {
         this.img = img;
     }
 
-
     public List<Rating> getRatings() {
         return ratings;
     }
@@ -110,28 +98,25 @@ public class Book {
         this.ratings = ratings;
     }
 
-    public String getGenres() {
+    public List<Genre> getGenres() {
         return genres;
     }
 
-    public void setGenres(String genres) {
+    public void setGenres(List<Genre> genres) {
         this.genres = genres;
     }
 
     public double getAverageStars() {
-        averageStars = setAverageStars();
-        return averageStars;
+        return setAverageStars();
     }
 
     public double setAverageStars() {
-        double result = 0;
+        double result = 0d;
         List<Rating> ratings = getRatings();
         int number = ratings.size();
         for (Rating i : ratings) {
             result = i.getValue() + result;
         }
-
-
         return (result / number);
     }
 }

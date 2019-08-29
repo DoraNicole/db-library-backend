@@ -4,43 +4,67 @@ import com.company.library.enums.Direction;
 import com.company.library.enums.OrderBy;
 import com.company.library.exceptions.PaginationSortingException;
 import com.company.library.exceptions.PagingSortingErrorResponse;
-import com.company.library.model.*;
-import com.company.library.repository.BookRepositoryInterface;
+import com.company.library.model.Author;
+import com.company.library.model.ResponsePageList;
+import com.company.library.repository.AuthorRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.support.PagedListHolder;
 import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
-@Service
-public class BookService implements BookServiceInterface {
+@RestController
+public class AuthorService implements AuthorServiceInterface {
 
     @Autowired
-    private BookRepositoryInterface bookRepositoryInterface;
+    private AuthorRepository authorRepository;
 
     @Override
-    public void addBook(Book book) {
-        bookRepositoryInterface.saveAndFlush(book);
+    public List<Author> getAuthorsList() {
+        return authorRepository.findAll();
     }
 
     @Override
-    public List<Book> getBooks() {
-        return bookRepositoryInterface.findAll();
+    public Author getAuthorByName(String query) {
+        return authorRepository.findAll().stream().filter(author -> author.getName().toLowerCase().contains(query.toLowerCase())).findFirst().orElse(null);
     }
 
     @Override
-    public void remove(Long bookId) {
-        bookRepositoryInterface.deleteById(bookId);
+    public List<Author> addAuthors(List<Author> authors) {
+        return authorRepository.saveAll(authors);
     }
 
     @Override
-    public ResponsePageList<Book> findPaginatedBooks(String orderBy, String direction, int page, int size, String query) {
+    public boolean checkIfAuthorExist(String query) {
+        return authorRepository.findAll().stream().anyMatch(author -> author.getName().toLowerCase().contains(query.toLowerCase()));
+    }
+
+    @Override
+    public void deleteAuthor(Author author) {
+        authorRepository.delete(author);
+    }
+
+    @Override
+    public Author getAuthorById(Long id) {
+        return authorRepository.getOne(id);
+    }
+
+    @Override
+    public void deleteAuthorById(Long id) {
+        authorRepository.deleteById(id);
+    }
+
+    @Override
+    public ResponsePageList<Author> findAuthorByName(String orderBy, String direction, int page, int size, String query) {
+
         Sort sort = null;
         if (direction.equals("ASC")) {
             sort = new Sort(Sort.Direction.ASC, orderBy);
@@ -56,23 +80,19 @@ public class BookService implements BookServiceInterface {
             throw new PaginationSortingException("Invalid orderBy condition");
         }
 
-        Predicate<Book> titleExist = book -> book.getTitle().toLowerCase().contains(query.toLowerCase());
-        Predicate<Genre> foundInGenre = genre -> genre.getName().toLowerCase().contains(query.toLowerCase());
-        Predicate<Book> genreExist = book -> book.getGenres().stream().anyMatch(foundInGenre);
-        Predicate<Author> foundInAuthorName = author -> author.getName().toLowerCase().contains(query.toLowerCase());
-        Predicate<Book> authorExist = book -> book.getAuthors().stream().anyMatch(foundInAuthorName);
-        List<Book> list = bookRepositoryInterface.findAll(sort).stream().filter(titleExist.or(genreExist).or(authorExist)).collect(Collectors.toList());
+        Predicate<Author> containName = author -> author.getName().equalsIgnoreCase(query);
+        List<Author> authorList = authorRepository.findAll(sort).stream().filter(containName).collect(Collectors.toList());
 
-        PagedListHolder<Book> pagedListHolder = new PagedListHolder<>(list);
+        PagedListHolder<Author> pagedListHolder = new PagedListHolder<>(authorList);
         pagedListHolder.setPageSize(size);
         pagedListHolder.setPage(page);
-        ResponsePageList<Book> response = new ResponsePageList<>();
+        ResponsePageList<Author> response = new ResponsePageList<>();
         response.setNrOfElements(pagedListHolder.getNrOfElements());
         response.setPageList(pagedListHolder.getPageList());
         return response;
-
     }
 
+    @Override
     @ExceptionHandler(PaginationSortingException.class)
     public ResponseEntity<PagingSortingErrorResponse> exceptionHandler(Exception ex) {
         PagingSortingErrorResponse pagingSortingErrorResponse = new PagingSortingErrorResponse();
@@ -80,23 +100,4 @@ public class BookService implements BookServiceInterface {
         pagingSortingErrorResponse.setMessage(ex.getMessage());
         return new ResponseEntity<>(pagingSortingErrorResponse, HttpStatus.OK);
     }
-
-    @Override
-    public Book findBookByIsbn(String isbn) {
-        return bookRepositoryInterface.findBookByIsbn(isbn);
-    }
-
-
-    public double setAverageStars(Book book) {
-        book = findBookByIsbn(book.getIsbn());
-        double result = 0;
-        List<Rating> ratings = book.getRatings();
-        int number = ratings.size();
-        for (Rating i : ratings) {
-            result = i.getValue() + result;
-        }
-
-        return result / number;
-    }
-
 }
