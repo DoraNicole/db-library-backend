@@ -46,10 +46,7 @@ public class Book {
         this.description = description;
     }
 
-    private double averageStars;
-
     private int stock;
-
 
     public Long getId() {
         return id;
@@ -123,10 +120,6 @@ public class Book {
         this.genres = genres;
     }
 
-    public double getAverageStars() {
-        return setAverageStars();
-    }
-
     public int getStock() {
         return stock;
     }
@@ -143,18 +136,21 @@ public class Book {
         this.stock--;
     }
 
+    public double getAverageStars() {
+        return setAverageStars();
+    }
+
     public double setAverageStars() {
         double result = 0d;
         List<Rating> ratings = getRatings();
         if(ratings.isEmpty()){
-            return 0d;
-        }else {
+            return 0;
+        }else{
             int number = ratings.size();
             for (Rating i : ratings) {
                 result = i.getValue() + result;
             }
             return (result / number);
         }
-
     }
 }
