@@ -1,9 +1,12 @@
 package com.company.library.service;
 
+import com.company.library.exceptions.BookOutOfStock;
 import com.company.library.exceptions.UserHasPenaltiesException;
+import com.company.library.model.Book;
 import com.company.library.model.Penalty;
 import com.company.library.model.User;
 import com.company.library.model.UserBook;
+import com.company.library.repository.BookRepositoryInterface;
 import com.company.library.repository.UserBookRepositoryInterface;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.mail.SimpleMailMessage;
@@ -15,18 +18,35 @@ import java.util.List;
 
 @Service
 public class UserBookService implements UserBookServiceInterface {
+
     @Autowired
     private UserBookRepositoryInterface userBookRepositoryInterface;
+
+    @Autowired
+    private BookServiceInterface bookService;
+
     @Autowired
     EmailService emailService;
 
     @Override
-    public void addUserBook(UserBook userBook) throws UserHasPenaltiesException {
+    public void addUserBook(UserBook userBook) throws UserHasPenaltiesException, BookOutOfStock {
 
+        //check if we dont have any more books of this type
+        //we use bookService because we want to check the stack value from database, not from the request we sended
+        if (bookService.findBookById(userBook.getBook().getId()).getStock() <= 0)
+            throw new BookOutOfStock();
+
+        //check if user has old penalties that are no longer active
         userBook.getUser().clearOldPenalties();
         //check if user has penalties
-        if(userBook.getUser().getPenalties().size() < Penalty.maxNumberOfPenalties)
-        userBookRepositoryInterface.save(userBook);
+        if (userBook.getUser().getPenalties().size() < Penalty.maxNumberOfPenalties){
+
+            //when we loan a book the stock should decrease with one unit
+            //we use bookService so the value will change in database
+            bookService.findBookById(userBook.getBook().getId()).decreseStock();
+            userBookRepositoryInterface.save(userBook);
+    }
+
         else
             //throws exception and doesn`t save userBook instance if user has 2 penalties
             throw new UserHasPenaltiesException();
@@ -49,6 +69,8 @@ public class UserBookService implements UserBookServiceInterface {
                        t.getUser().addPenalty(new Penalty(LocalDate.now()));
             }
         });
+        //when the book is returned, the stock should increase with one unit
+        userBookRepositoryInterface.findById(userBookId).ifPresent(t->t.getBook().setStock(t.getBook().getStock() + 1));
         userBookRepositoryInterface.deleteById(userBookId);
     }
 

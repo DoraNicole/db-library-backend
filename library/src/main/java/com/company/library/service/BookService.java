@@ -73,6 +73,12 @@ public class BookService implements BookServiceInterface {
 
     }
 
+
+    @Override
+    public Book findBookByTitleAndAuthor(String title, String author) {
+        return bookRepositoryInterface.findBookByTitleAndAuthor(title, author);
+    }
+
     @ExceptionHandler(PaginationSortingException.class)
     public ResponseEntity<PagingSortingErrorResponse> exceptionHandler(Exception ex) {
         PagingSortingErrorResponse pagingSortingErrorResponse = new PagingSortingErrorResponse();
@@ -84,6 +90,11 @@ public class BookService implements BookServiceInterface {
     @Override
     public Book findBookByIsbn(String isbn) {
         return bookRepositoryInterface.findBookByIsbn(isbn);
+    }
+
+    @Override
+    public Book findBookById(Long id) {
+        return bookRepositoryInterface.findBookById(id);
     }
 
 

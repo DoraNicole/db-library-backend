@@ -13,4 +13,5 @@ public interface BookServiceInterface {
     ResponsePageList<Book> findPaginatedBooks(String orderBy, String direction, int page, int size, String query);
     //Book findBookByTitleAndAuthor(String title, String author);
     Book findBookByIsbn(String isbn);
+    Book findBookById(Long id);
 }
