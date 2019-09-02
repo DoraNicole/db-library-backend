@@ -58,14 +58,6 @@ public class UserBookController {
 
     @GetMapping("/getBorrowedBooks")
     public List<Book> getBorrowedBooks(@RequestParam("id") Long id){
-        List<Book> returnList = new ArrayList<>();
-
-        //search in all user-book relations for the users who has the given id and add in return list their book
-        userBookService.getUserBooks().forEach(t->{
-
-        if(t.getUser().getId() == id)
-            returnList.add(t.getBook());
-    });
-        return returnList;
+        return userBookService.getBorrowedBooks(id);
     }
 }
