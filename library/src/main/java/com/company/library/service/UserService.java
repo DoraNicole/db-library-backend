@@ -2,6 +2,7 @@ package com.company.library.service;
 
 import com.company.library.DTO.Registration;
 import com.company.library.exceptions.EmailExistsException;
+import com.company.library.model.Book;
 import com.company.library.model.Role;
 import com.company.library.model.User;
 import com.company.library.model.VerificationToken;
@@ -12,6 +13,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
@@ -102,7 +104,4 @@ public class UserService implements UserServiceInterface {
         foundUser.setPassword(bcryptEncoder.encode(password));
         return userDao.save(foundUser);
     }
-
-
-
 }
