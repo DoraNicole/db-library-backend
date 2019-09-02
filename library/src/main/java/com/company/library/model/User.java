@@ -27,7 +27,8 @@ public class User {
     @NotBlank
     private String password;
 
-    private Blob img;
+    @OneToOne(fetch = FetchType.LAZY,cascade = CascadeType.ALL,orphanRemoval = true)
+    private ImageModel img;
 
     private boolean isAdmin;
 
@@ -84,11 +85,11 @@ public class User {
         this.password = password;
     }
 
-    public Blob getImg() {
+    public ImageModel getImg() {
         return img;
     }
 
-    public void setImg(Blob img) {
+    public void setImg(ImageModel img) {
         this.img = img;
     }
 
