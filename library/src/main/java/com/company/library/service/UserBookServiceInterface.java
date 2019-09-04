@@ -14,5 +14,5 @@ public interface UserBookServiceInterface {
     void remove(Long userBookId);
     public void sendReminder();
     public List<Book> getBorrowedBooks(Long userId);
-
+    public void returnBorrowBook(Long userId, Long bookId);
 }
