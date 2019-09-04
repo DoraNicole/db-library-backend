@@ -6,6 +6,7 @@ import com.company.library.enums.OrderBy;
 import com.company.library.exceptions.EmailExistsException;
 import com.company.library.exceptions.PaginationSortingException;
 import com.company.library.model.ResponsePageList;
+import com.company.library.model.Book;
 import com.company.library.model.Role;
 import com.company.library.model.User;
 import com.company.library.model.VerificationToken;
@@ -18,6 +19,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
@@ -113,6 +115,7 @@ public class UserService implements UserServiceInterface {
     }
 
 
+
     @Override
     public ResponsePageList<User> findPaginatedUsers(String orderBy, String direction, int page, int size, String query) {
         Sort sort = null;
@@ -143,4 +146,5 @@ public class UserService implements UserServiceInterface {
         return response;
 
     }
+
 }

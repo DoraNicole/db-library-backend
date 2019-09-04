@@ -14,6 +14,7 @@ import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -24,6 +25,9 @@ public class UserBookService implements UserBookServiceInterface {
 
     @Autowired
     private BookServiceInterface bookService;
+
+    @Autowired
+    private UserServiceInterface userService;
 
     @Autowired
     EmailService emailService;
@@ -86,4 +90,18 @@ public class UserBookService implements UserBookServiceInterface {
             emailService.sendEmail(messageReturn);
         }
     }
-}
+
+    @Override
+    public List<Book> getBorrowedBooks(Long userId) {
+            List<Book> returnList = new ArrayList<>();
+
+            //search in all user-book relations for the users who has the given id and add in return list their book
+           getUserBooks().forEach(t->{
+
+                if(t.getUser().getId() == userId)
+                    returnList.add(t.getBook());
+            });
+            return returnList;
+        }
+    }
+
