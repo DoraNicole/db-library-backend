@@ -60,4 +60,10 @@ public class UserBookController {
     public List<Book> getBorrowedBooks(@RequestParam("id") Long id){
         return userBookService.getBorrowedBooks(id);
     }
+
+    @PostMapping("/returnBook")
+    public void returnBook(@RequestParam("id") Long userId, @RequestBody Book book){
+        userBookService.returnBorrowBook(userId, book.getId());
+
+    }
 }

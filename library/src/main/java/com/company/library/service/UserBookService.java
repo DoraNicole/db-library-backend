@@ -103,5 +103,16 @@ public class UserBookService implements UserBookServiceInterface {
             });
             return returnList;
         }
+
+    @Override
+    public void returnBorrowBook(Long userId, Long bookId) {
+
+        //search in all userBooks for the one that has the user and the book we are looking for
+        //then use remove to return book
+        System.out.println(getUserBooks().stream().filter(t->t.getBook().getId() == bookId && t.getUser().getId() == userId).findAny().orElse(null).getId());
+
+        remove(getUserBooks().stream().filter(t->t.getBook().getId() == bookId && t.getUser().getId() == userId).findAny().orElse(null).getId());
     }
+
+}
 
