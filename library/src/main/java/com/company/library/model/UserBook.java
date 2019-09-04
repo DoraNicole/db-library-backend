@@ -1,5 +1,6 @@
 package com.company.library.model;
 
+
 import org.hibernate.annotations.Cascade;
 
 import javax.persistence.*;
@@ -19,6 +20,8 @@ public class UserBook {
     private Book book;
 
     private LocalDate return_date;
+
+    private boolean generatedPenalty;
 
     public Long getId() {
         return id;
@@ -52,4 +55,11 @@ public class UserBook {
         this.return_date = return_date;
     }
 
+    public boolean isGeneratedPenalty() {
+        return generatedPenalty;
+    }
+
+    public void setGeneratedPenalty(boolean generatedPenalty) {
+        this.generatedPenalty = generatedPenalty;
+    }
 }

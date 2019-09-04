@@ -40,9 +40,7 @@ public class UserBookService implements UserBookServiceInterface {
         if (bookService.findBookById(userBook.getBook().getId()).getStock() <= 0)
             throw new BookOutOfStock();
 
-        //check if user has old penalties that are no longer active
-        userBook.getUser().clearOldPenalties();
-        //check if user has penalties
+
         if (userBook.getUser().getPenalties().size() < Penalty.maxNumberOfPenalties){
 
             //when we loan a book the stock should decrease with one unit
@@ -64,15 +62,6 @@ public class UserBookService implements UserBookServiceInterface {
     @Override
     public void remove(Long userBookId){
 
-        //check if we should penalise the user
-        userBookRepositoryInterface.findById(userBookId).ifPresent(t-> {
-            LocalDate returnDate = t.getReturn_date(); // get supposed return date
-            if(LocalDate.now().isAfter(returnDate)) // check if real return date is after supposed return date
-            {
-                // penalise user with one more penalty
-                       t.getUser().addPenalty(new Penalty(LocalDate.now()));
-            }
-        });
         //when the book is returned, the stock should increase with one unit
         userBookRepositoryInterface.findById(userBookId).ifPresent(t->t.getBook().setStock(t.getBook().getStock() + 1));
         userBookRepositoryInterface.deleteById(userBookId);
@@ -92,14 +81,14 @@ public class UserBookService implements UserBookServiceInterface {
     }
 
     @Override
-    public List<Book> getBorrowedBooks(Long userId) {
-            List<Book> returnList = new ArrayList<>();
+    public List<UserBook> getBorrowedBooks(Long userId) {
+            List<UserBook> returnList = new ArrayList<>();
 
             //search in all user-book relations for the users who has the given id and add in return list their book
            getUserBooks().forEach(t->{
 
                 if(t.getUser().getId() == userId)
-                    returnList.add(t.getBook());
+                    returnList.add(t);
             });
             return returnList;
         }
@@ -109,10 +98,16 @@ public class UserBookService implements UserBookServiceInterface {
 
         //search in all userBooks for the one that has the user and the book we are looking for
         //then use remove to return book
-        System.out.println(getUserBooks().stream().filter(t->t.getBook().getId() == bookId && t.getUser().getId() == userId).findAny().orElse(null).getId());
+      //  System.out.println(getUserBooks().stream().filter(t->t.getBook().getId() == bookId && t.getUser().getId() == userId).findAny().orElse(null).getId());
 
         remove(getUserBooks().stream().filter(t->t.getBook().getId() == bookId && t.getUser().getId() == userId).findAny().orElse(null).getId());
     }
 
+    public void changeUserBookPenalty(Long userBookId){
+        userBookRepositoryInterface.findById(userBookId).ifPresent(t->{
+            t.setGeneratedPenalty(true);
+            userBookRepositoryInterface.saveAndFlush(t);
+        });
+    }
 }
 
