@@ -1,7 +1,11 @@
 package com.company.library.service;
 
 import com.company.library.DTO.Registration;
+import com.company.library.enums.Direction;
+import com.company.library.enums.OrderBy;
 import com.company.library.exceptions.EmailExistsException;
+import com.company.library.exceptions.PaginationSortingException;
+import com.company.library.model.ResponsePageList;
 import com.company.library.model.Role;
 import com.company.library.model.User;
 import com.company.library.model.VerificationToken;
@@ -9,12 +13,16 @@ import com.company.library.repository.RoleRepository;
 import com.company.library.repository.UserRepositoryInterface;
 import com.company.library.repository.VerificationTokenRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.support.PagedListHolder;
+import org.springframework.data.domain.Sort;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
+import java.util.function.Predicate;
+import java.util.stream.Collectors;
 
 
 @Service
@@ -85,6 +93,7 @@ public class UserService implements UserServiceInterface {
         userRepository.delete(user);
     }
 
+
     @Override
     public User findUserByEmail(String email) {
         return userRepository.findByEmail(email);
@@ -104,5 +113,34 @@ public class UserService implements UserServiceInterface {
     }
 
 
+    @Override
+    public ResponsePageList<User> findPaginatedUsers(String orderBy, String direction, int page, int size, String query) {
+        Sort sort = null;
+        if (direction.equals("ASC")) {
+            sort = new Sort(Sort.Direction.ASC, orderBy);
+        }
+        if (direction.equals("DESC")) {
+            sort = new Sort(Sort.Direction.DESC, orderBy);
+        }
 
+        if (!(direction.equals(Direction.ASCENDING.getDirectionCode()) || direction.equals(Direction.DESCENDING.getDirectionCode()))) {
+            throw new PaginationSortingException("Invalid sort direction");
+        }
+        if (!(orderBy.equals(OrderBy.ID.getOrderByCode()) || orderBy.equals(OrderBy.TITLE.getOrderByCode()))) {
+            throw new PaginationSortingException("Invalid orderBy condition");
+        }
+
+        Predicate<User> firstNameExist = user -> user.getFirstName().toLowerCase().contains(query.toLowerCase());
+        Predicate<User> lastNameExist = user -> user.getLastName().toLowerCase().contains(query.toLowerCase());
+        List<User> list = userRepository.findAll(sort).stream().filter(firstNameExist.or(lastNameExist)).collect(Collectors.toList());
+
+        PagedListHolder<User> pagedListHolder = new PagedListHolder<>(list);
+        pagedListHolder.setPageSize(size);
+        pagedListHolder.setPage(page);
+        ResponsePageList<User> response = new ResponsePageList<>();
+        response.setNrOfElements(pagedListHolder.getNrOfElements());
+        response.setPageList(pagedListHolder.getPageList());
+        return response;
+
+    }
 }

@@ -7,6 +7,8 @@ import com.company.library.model.VerificationToken;
 import com.company.library.repository.VerificationTokenRepository;
 import com.company.library.service.EmailService;
 import com.company.library.service.UserService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.web.bind.annotation.*;
@@ -24,6 +26,8 @@ public class ActivateAccountController {
     private final VerificationTokenRepository verificationTokenRepository;
     private final EmailService emailService;
 
+    private Logger log = LoggerFactory.getLogger(getClass().getName());
+
     @Autowired
     public ActivateAccountController(UserService userService, VerificationTokenRepository verificationTokenRepository, EmailService emailService) {
         this.userService = userService;
@@ -33,24 +37,27 @@ public class ActivateAccountController {
 
     @PostMapping("/register")
     @Transactional
-    public User registerUserAccount(@RequestBody Registration userDto, HttpServletRequest request) throws EmailExistsException {
-        User registered = userService.registerNewUserAccount(userDto);
-        VerificationToken token = new VerificationToken(registered);
-        VerificationToken savedToken = verificationTokenRepository.save(token);
+    public User registerUserAccount(@RequestBody Registration userDto, HttpServletRequest request) throws EmailExistsException{
 
-        URL url = null;
-        try {
-            url = new URL(request.getRequestURL().toString().replace("/register", "") + "/registerConfirm?token=" + savedToken.getToken());
-        } catch (MalformedURLException e) {
-            e.printStackTrace();
-        }
+            User registered = userService.registerNewUserAccount(userDto);
+            VerificationToken token = new VerificationToken(registered);
+            VerificationToken savedToken = verificationTokenRepository.save(token);
 
-        SimpleMailMessage message = new SimpleMailMessage();
-        message.setTo(registered.getEmail());
-        message.setSubject("Welcome to our library platform!");
-        message.setText(String.format("Please click the following link to confirm your account activation : %s", url));
-        emailService.sendEmail(message);
-        return registered;
+            URL url = null;
+            try {
+                url = new URL(request.getRequestURL().toString().replace("/register", "") + "/registerConfirm?token=" + savedToken.getToken());
+            } catch (MalformedURLException e) {
+                log.error("The user is currently disabled!");
+                e.printStackTrace();
+            }
+
+            SimpleMailMessage message = new SimpleMailMessage();
+            message.setTo(registered.getEmail());
+            message.setSubject("Welcome to our library platform!");
+            message.setText(String.format("Please click the following link to confirm your account activation : %s", url));
+            emailService.sendEmail(message);
+            return registered;
+
     }
 
     @GetMapping("/registerConfirm")
