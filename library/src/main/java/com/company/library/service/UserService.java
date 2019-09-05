@@ -6,20 +6,16 @@ import com.company.library.enums.OrderBy;
 import com.company.library.exceptions.EmailExistsException;
 import com.company.library.exceptions.PaginationSortingException;
 import com.company.library.model.ResponsePageList;
-import com.company.library.model.Book;
 import com.company.library.model.Role;
 import com.company.library.model.User;
-import com.company.library.model.VerificationToken;
 import com.company.library.repository.RoleRepository;
 import com.company.library.repository.UserRepositoryInterface;
-import com.company.library.repository.VerificationTokenRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.support.PagedListHolder;
 import org.springframework.data.domain.Sort;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
@@ -113,8 +109,6 @@ public class UserService implements UserServiceInterface {
         foundUser.setPassword(bcryptEncoder.encode(password));
         return userDao.save(foundUser);
     }
-
-
 
     @Override
     public ResponsePageList<User> findPaginatedUsers(String orderBy, String direction, int page, int size, String query) {
