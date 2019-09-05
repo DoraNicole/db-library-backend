@@ -18,4 +18,7 @@ public interface UserServiceInterface {
     ResponsePageList<User> findPaginatedUsers(String orderBy, String direction, int page, int size, String query);
     User findUserByEmail(String email);
 
+    void clearPenalties(User user);
+
+    void checkForPenalties(User user);
 }
