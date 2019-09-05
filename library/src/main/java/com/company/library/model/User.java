@@ -33,6 +33,8 @@ public class User {
 
     private boolean isAdmin;
 
+    private boolean isBanned;
+
     @OneToMany(cascade = CascadeType.ALL)
     private List<Penalty> penalties = new ArrayList<>();
 
@@ -124,6 +126,15 @@ public class User {
     public void setGenres(List<Genre> genres) {
         this.genres = genres;
     }
+    
+    public boolean isBanned() {
+        return isBanned;
+    }
+
+    public void setBanned(boolean banned) {
+        isBanned = banned;
+    }
+
 
     @Override
     public String toString() {

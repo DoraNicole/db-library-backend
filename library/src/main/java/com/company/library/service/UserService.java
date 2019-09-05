@@ -11,18 +11,19 @@ import com.company.library.model.Role;
 import com.company.library.model.User;
 import com.company.library.repository.RoleRepository;
 import com.company.library.repository.UserRepositoryInterface;
+
+
 import org.apache.tomcat.jni.Local;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.support.PagedListHolder;
 import org.springframework.data.domain.Sort;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-
 import java.time.LocalDate;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
-import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
@@ -117,8 +118,6 @@ public class UserService implements UserServiceInterface {
         foundUser.setPassword(bcryptEncoder.encode(password));
         return userDao.save(foundUser);
     }
-
-
 
     @Override
     public ResponsePageList<User> findPaginatedUsers(String orderBy, String direction, int page, int size, String query) {
