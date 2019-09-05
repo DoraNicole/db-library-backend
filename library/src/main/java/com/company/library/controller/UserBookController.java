@@ -3,6 +3,7 @@ package com.company.library.controller;
 import com.company.library.exceptions.BookOutOfStock;
 import com.company.library.exceptions.UserHasPenaltiesException;
 import com.company.library.model.Book;
+import com.company.library.model.ResponsePageList;
 import com.company.library.model.User;
 import com.company.library.model.UserBook;
 import com.company.library.service.EmailService;
@@ -57,8 +58,14 @@ public class UserBookController {
     }
 
     @GetMapping("/getBorrowedBooks")
-    public List<UserBook> getBorrowedBooks(@RequestParam("id") Long id){
-        return userBookService.getBorrowedBooks(id);
+    public ResponsePageList<UserBook> getBorrowedBooks(
+            @RequestParam("orderBy") String orderBy,
+            @RequestParam("direction") String direction,
+            @RequestParam("page") int page,
+            @RequestParam("size") int size,
+            @RequestParam("id") String id
+    ){
+        return userBookService.getBorrowedBooks(orderBy, direction, page, size, id);
     }
 
     @PostMapping("/returnBook")
