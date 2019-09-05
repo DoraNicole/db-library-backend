@@ -84,7 +84,7 @@ public class ActivateAccountController {
 
         URL url = null;
         try {
-            url = new URL(request.getRequestURL().toString().replace("/register", "") + "/registerConfirm?token=" + savedToken.getToken());
+            url = new URL(request.getRequestURL().toString().replace("/resendVerificationLink", "") + "/registerConfirm?token=" + savedToken.getToken());
         } catch (MalformedURLException e) {
             log.error("The user is currently disabled!");
             e.printStackTrace();
