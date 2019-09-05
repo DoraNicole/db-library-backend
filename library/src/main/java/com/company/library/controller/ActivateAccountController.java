@@ -17,6 +17,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.transaction.Transactional;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.time.LocalDateTime;
 
 @RestController
 public class ActivateAccountController {
@@ -37,27 +38,64 @@ public class ActivateAccountController {
 
     @PostMapping("/register")
     @Transactional
-    public User registerUserAccount(@RequestBody Registration userDto, HttpServletRequest request) throws EmailExistsException{
+    public User registerUserAccount(@RequestBody Registration userDto, HttpServletRequest request) throws EmailExistsException {
 
-            User registered = userService.registerNewUserAccount(userDto);
-            VerificationToken token = new VerificationToken(registered);
-            VerificationToken savedToken = verificationTokenRepository.save(token);
+        User registered = userService.registerNewUserAccount(userDto);
+        VerificationToken token = new VerificationToken(registered);
+        VerificationToken savedToken = verificationTokenRepository.save(token);
 
-            URL url = null;
-            try {
-                url = new URL(request.getRequestURL().toString().replace("/register", "") + "/registerConfirm?token=" + savedToken.getToken());
-            } catch (MalformedURLException e) {
-                log.error("The user is currently disabled!");
-                e.printStackTrace();
-            }
+        URL url = null;
+        try {
+            url = new URL(request.getRequestURL().toString().replace("/register", "") + "/registerConfirm?token=" + savedToken.getToken());
+        } catch (MalformedURLException e) {
+            log.error("The user is currently disabled!");
+            e.printStackTrace();
+        }
 
-            SimpleMailMessage message = new SimpleMailMessage();
-            message.setTo(registered.getEmail());
-            message.setSubject("Welcome to our library platform!");
-            message.setText(String.format("Please click the following link to confirm your account activation : %s", url));
-            emailService.sendEmail(message);
-            return registered;
+        SimpleMailMessage message = new SimpleMailMessage();
+        message.setTo(registered.getEmail());
+        message.setSubject("Welcome to our library platform!");
+        message.setText(String.format("Please click the following link to confirm your account activation : %s", url));
+        emailService.sendEmail(message);
+        return registered;
 
+    }
+
+    @PostMapping("/resendVerificationLink")
+    public String resendVerification(HttpServletRequest request, @RequestBody String email) {
+
+        User user = userService.findUserByEmail(email);
+
+        if (user == null) {
+            log.error("The email {} does not correspond to an active user", email);
+            throw new RuntimeException("The email " + email + " does not correspond to an active user");
+        }
+
+        VerificationToken oldToken = verificationTokenRepository.findActiveByUserEmail(email);
+
+        if (oldToken == null) {
+            log.error("The email {} does not have an active associated token!", email);
+            throw new RuntimeException("The user " + email + " does not have an active associated token!");
+        }
+
+        oldToken.setExpiryDateTime(LocalDateTime.from(LocalDateTime.of(2000,11,12, 0, 0, 0)));
+        VerificationToken newToken = new VerificationToken(user);
+        VerificationToken savedToken = verificationTokenRepository.save(newToken);
+
+        URL url = null;
+        try {
+            url = new URL(request.getRequestURL().toString().replace("/register", "") + "/registerConfirm?token=" + savedToken.getToken());
+        } catch (MalformedURLException e) {
+            log.error("The user is currently disabled!");
+            e.printStackTrace();
+        }
+
+        SimpleMailMessage message = new SimpleMailMessage();
+        message.setTo(user.getEmail());
+        message.setSubject("Welcome to our library platform!");
+        message.setText(String.format("Please click the following link to confirm your account activation : %s", url));
+        emailService.sendEmail(message);
+        return "successfully resent verification link";
     }
 
     @GetMapping("/registerConfirm")
