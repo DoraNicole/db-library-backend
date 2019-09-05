@@ -12,6 +12,7 @@ import com.company.library.model.User;
 import com.company.library.repository.RoleRepository;
 import com.company.library.repository.UserRepositoryInterface;
 
+
 import org.apache.tomcat.jni.Local;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,7 +24,6 @@ import java.time.LocalDate;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
-import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 

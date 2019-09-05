@@ -1,14 +1,16 @@
 package com.company.library.service;
 
+import com.company.library.enums.Direction;
+import com.company.library.enums.OrderBy;
 import com.company.library.exceptions.BookOutOfStock;
+import com.company.library.exceptions.PaginationSortingException;
 import com.company.library.exceptions.UserHasPenaltiesException;
-import com.company.library.model.Book;
-import com.company.library.model.Penalty;
-import com.company.library.model.User;
-import com.company.library.model.UserBook;
+import com.company.library.model.*;
 import com.company.library.repository.BookRepositoryInterface;
 import com.company.library.repository.UserBookRepositoryInterface;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.support.PagedListHolder;
+import org.springframework.data.domain.Sort;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
@@ -16,6 +18,8 @@ import org.springframework.stereotype.Service;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.function.Predicate;
+import java.util.stream.Collectors;
 
 @Service
 public class UserBookService implements UserBookServiceInterface {
@@ -80,18 +84,37 @@ public class UserBookService implements UserBookServiceInterface {
         }
     }
 
+
     @Override
-    public List<UserBook> getBorrowedBooks(Long userId) {
-            List<UserBook> returnList = new ArrayList<>();
-
-            //search in all user-book relations for the users who has the given id and add in return list their book
-           getUserBooks().forEach(t->{
-
-                if(t.getUser().getId() == userId)
-                    returnList.add(t);
-            });
-            return returnList;
+    public ResponsePageList<UserBook> getBorrowedBooks(String orderBy, String direction, int page, int size, String id) {
+        Sort sort = null;
+        if (direction.equals("ASC")) {
+            sort = new Sort(Sort.Direction.ASC, orderBy);
         }
+        if (direction.equals("DESC")) {
+            sort = new Sort(Sort.Direction.DESC, orderBy);
+        }
+
+        if (!(direction.equals(Direction.ASCENDING.getDirectionCode()) || direction.equals(Direction.DESCENDING.getDirectionCode()))) {
+            throw new PaginationSortingException("Invalid sort direction");
+        }
+        if (!(orderBy.equals(OrderBy.ID.getOrderByCode()) || orderBy.equals(OrderBy.TITLE.getOrderByCode()))) {
+            throw new PaginationSortingException("Invalid orderBy condition");
+        }
+
+        Predicate<UserBook> byId = userBook -> userBook.getUser().getId().toString().equals(id);
+        List<UserBook> list = userBookRepositoryInterface.findAll(sort).stream().filter(byId).collect(Collectors.toList());
+
+        PagedListHolder<UserBook> pagedListHolder = new PagedListHolder<>(list);
+        pagedListHolder.setPageSize(size);
+        pagedListHolder.setPage(page);
+        ResponsePageList<UserBook> response = new ResponsePageList<>();
+        response.setNrOfElements(pagedListHolder.getNrOfElements());
+        response.setPageList(pagedListHolder.getPageList());
+        return response;
+
+    }
+
 
     @Override
     public void returnBorrowBook(Long userId, Long bookId) {
