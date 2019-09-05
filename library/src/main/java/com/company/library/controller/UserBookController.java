@@ -57,7 +57,7 @@ public class UserBookController {
     }
 
     @GetMapping("/getBorrowedBooks")
-    public List<Book> getBorrowedBooks(@RequestParam("id") Long id){
+    public List<UserBook> getBorrowedBooks(@RequestParam("id") Long id){
         return userBookService.getBorrowedBooks(id);
     }
 

@@ -4,6 +4,7 @@ import com.company.library.model.ResponsePageList;
 import com.company.library.model.Role;
 import com.company.library.model.User;
 import com.company.library.repository.RoleRepository;
+import com.company.library.service.UserBookServiceInterface;
 import com.company.library.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -24,6 +25,8 @@ public class UserController {
 
     @Autowired
     private RoleRepository roleRepository;
+
+
 
     @GetMapping("/allusers")
     List<User> findAll() {
@@ -67,5 +70,15 @@ public class UserController {
     @PostMapping("/updateUser")
     public void updateUser(@RequestBody User user){
        userService.save(user);
+    }
+
+    @PostMapping("/clearPenalties")
+    public void clearPenalties(@RequestBody User user){
+        userService.clearPenalties(user);
+    }
+
+    @PostMapping("/checkForPenalties")
+   public void checkForPenalties(@RequestBody User user){
+        userService.checkForPenalties(user);
     }
 }
