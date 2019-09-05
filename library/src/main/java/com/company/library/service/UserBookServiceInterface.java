@@ -13,6 +13,7 @@ public interface UserBookServiceInterface {
     List<UserBook> getUserBooks();
     void remove(Long userBookId);
     public void sendReminder();
-    public List<Book> getBorrowedBooks(Long userId);
+    public List<UserBook> getBorrowedBooks(Long userId);
     public void returnBorrowBook(Long userId, Long bookId);
+    public void changeUserBookPenalty(Long userBookId);
 }

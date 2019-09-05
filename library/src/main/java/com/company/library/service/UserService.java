@@ -5,24 +5,24 @@ import com.company.library.enums.Direction;
 import com.company.library.enums.OrderBy;
 import com.company.library.exceptions.EmailExistsException;
 import com.company.library.exceptions.PaginationSortingException;
+import com.company.library.model.Penalty;
 import com.company.library.model.ResponsePageList;
-import com.company.library.model.Book;
 import com.company.library.model.Role;
 import com.company.library.model.User;
-import com.company.library.model.VerificationToken;
 import com.company.library.repository.RoleRepository;
 import com.company.library.repository.UserRepositoryInterface;
-import com.company.library.repository.VerificationTokenRepository;
+import org.apache.tomcat.jni.Local;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.support.PagedListHolder;
 import org.springframework.data.domain.Sort;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
+import java.time.LocalDate;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
+import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
@@ -40,6 +40,10 @@ public class UserService implements UserServiceInterface {
         this.roleRepository = roleRepository;
         this.userRepository = userRepository;
     }
+
+    @Autowired
+    private UserBookServiceInterface userBookService;
+
 
     @Autowired
     private UserRepositoryInterface userDao;
@@ -147,4 +151,24 @@ public class UserService implements UserServiceInterface {
 
     }
 
+    @Override
+    public void clearPenalties(User u) {
+        //find the user and search for old penalties to remove them
+        userRepository.findById(u.getId()).ifPresent(t->t.getPenalties().forEach(p-> {
+            if(p.getPenaltyAddedDate().isBefore(LocalDate.now()))
+                t.getPenalties().remove(p);
+        }));
+    }
+
+    @Override
+    public void checkForPenalties(User user) {
+        userBookService.getUserBooks().stream().filter(t->t.getUser().getId().equals(user.getId())).forEach(t->{
+            System.out.println(t);
+            if(!t.isGeneratedPenalty() && t.getReturn_date().isBefore(LocalDate.now())) {
+                t.getUser().addPenalty(new Penalty(LocalDate.now().plusMonths(Penalty.numberOfMonthsPenaltyExist)));
+                System.out.println(t.isGeneratedPenalty());
+                userBookService.changeUserBookPenalty(t.getId());
+            }
+        });
+    }
 }

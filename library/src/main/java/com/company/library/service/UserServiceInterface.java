@@ -20,4 +20,7 @@ public interface UserServiceInterface {
 
     User findUserByEmail(String email);
 
+    void clearPenalties(User user);
+
+    void checkForPenalties(User user);
 }
