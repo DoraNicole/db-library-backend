@@ -53,6 +53,16 @@ public class BookController {
     ) {
         return new ResponseEntity<>(bookService.findPaginatedBooks(orderBy, direction, page, size, query), HttpStatus.OK);
     }
+    @GetMapping("/preferredBooks")
+    public ResponseEntity<ResponsePageList<Book>> findPreferredBooks(
+            @RequestParam("orderBy") String orderBy,
+            @RequestParam("direction") String direction,
+            @RequestParam("page") int page,
+            @RequestParam("size") int size,
+            @RequestParam("id") String id
+    ) {
+        return new ResponseEntity<>(bookService.findPreferredBooks(orderBy, direction, page, size, id), HttpStatus.OK);
+    }
 
     @GetMapping("/searchBookById")
     public Book searchBookById(@RequestParam("id") Long id){
