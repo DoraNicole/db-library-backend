@@ -36,6 +36,8 @@ public class UserBookService implements UserBookServiceInterface {
     @Autowired
     EmailService emailService;
 
+
+
     @Override
     public void addUserBook(UserBook userBook) throws UserHasPenaltiesException, BookOutOfStock {
 
@@ -45,15 +47,13 @@ public class UserBookService implements UserBookServiceInterface {
             throw new BookOutOfStock();
 
 
-        if (userBook.getUser().getPenalties().size() < Penalty.maxNumberOfPenalties){
+        if (userBook.getUser().getPenalties().size() < Penalty.maxNumberOfPenalties) {
 
             //when we loan a book the stock should decrease with one unit
             //we use bookService so the value will change in database
             bookService.findBookById(userBook.getBook().getId()).decreseStock();
             userBookRepositoryInterface.save(userBook);
-    }
-
-        else
+        } else
             //throws exception and doesn`t save userBook instance if user has 2 penalties
             throw new UserHasPenaltiesException();
     }
@@ -63,19 +63,11 @@ public class UserBookService implements UserBookServiceInterface {
         return userBookRepositoryInterface.findAll();
     }
 
-    @Override
-    public void remove(Long userBookId){
-
-        //when the book is returned, the stock should increase with one unit
-        userBookRepositoryInterface.findById(userBookId).ifPresent(t->t.getBook().setStock(t.getBook().getStock() + 1));
-        userBookRepositoryInterface.deleteById(userBookId);
-    }
-
     //@Scheduled(cron = "0 * * * * ?")
-    public void sendReminder(){
-        List<UserBook> list=userBookRepositoryInterface.remindUsers();
-        for(UserBook u: list) {
-            User user=u.getUser();
+    public void sendReminder() {
+        List<UserBook> list = userBookRepositoryInterface.remindUsers();
+        for (UserBook u : list) {
+            User user = u.getUser();
             SimpleMailMessage messageReturn = new SimpleMailMessage();
             messageReturn.setTo(user.getEmail());
             messageReturn.setSubject("Book return notification");
@@ -117,20 +109,23 @@ public class UserBookService implements UserBookServiceInterface {
 
 
     @Override
-    public void returnBorrowBook(Long userId, Long bookId) {
+    public void returnBorrowBook(Long borrowId) {
 
-        //search in all userBooks for the one that has the user and the book we are looking for
-        //then use remove to return book
-      //  System.out.println(getUserBooks().stream().filter(t->t.getBook().getId() == bookId && t.getUser().getId() == userId).findAny().orElse(null).getId());
-
-        remove(getUserBooks().stream().filter(t->t.getBook().getId() == bookId && t.getUser().getId() == userId).findAny().orElse(null).getId());
+        //when the book is returned, the stock should increase with one unit
+        userBookRepositoryInterface.findById(borrowId).ifPresent(t -> t.getBook().setStock(t.getBook().getStock() + 1));
+        userBookRepositoryInterface.deleteById(borrowId);
     }
 
-    public void changeUserBookPenalty(Long userBookId){
-        userBookRepositoryInterface.findById(userBookId).ifPresent(t->{
+    public void changeUserBookPenalty(Long userBookId) {
+        userBookRepositoryInterface.findById(userBookId).ifPresent(t -> {
             t.setGeneratedPenalty(true);
             userBookRepositoryInterface.saveAndFlush(t);
         });
+    }
+
+    @Override
+    public void removeById(Long userBookId) {
+        userBookRepositoryInterface.deleteById(userBookId);
     }
 }
 

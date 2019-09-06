@@ -91,6 +91,7 @@ public class UserService implements UserServiceInterface {
             newUser.setRoles(Collections.singleton(userRole));
             newUser.setAdmin(false);
         }
+
         return userRepository.save(newUser);
     }
 
