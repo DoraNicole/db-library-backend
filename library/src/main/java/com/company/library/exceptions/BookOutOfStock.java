@@ -1,6 +1,6 @@
 package com.company.library.exceptions;
 
-public class BookOutOfStock extends Throwable {
+public class BookOutOfStock extends Exception {
 
     @Override
     public String getMessage() {
