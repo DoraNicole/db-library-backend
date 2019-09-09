@@ -126,7 +126,7 @@ public class User {
     public void setGenres(List<Genre> genres) {
         this.genres = genres;
     }
-    
+
     public boolean isBanned() {
         return isBanned;
     }

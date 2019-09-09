@@ -1,8 +1,10 @@
 package com.company.library.controller;
 
 import com.company.library.model.Book;
+import com.company.library.model.Rating;
 import com.company.library.model.ResponsePageList;
 import com.company.library.service.BookServiceInterface;
+import com.company.library.service.RatingServiceInterface;
 import com.company.library.service.UserBookServiceInterface;
 import com.company.library.service.UserServiceInterface;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,6 +19,9 @@ public class BookController {
 
     @Autowired
     private BookServiceInterface bookService;
+
+    @Autowired
+    private RatingServiceInterface ratingService;
 
 
     @Autowired
@@ -53,6 +58,7 @@ public class BookController {
     ) {
         return new ResponseEntity<>(bookService.findPaginatedBooks(orderBy, direction, page, size, query), HttpStatus.OK);
     }
+
     @GetMapping("/preferredBooks")
     public ResponseEntity<ResponsePageList<Book>> findPreferredBooks(
             @RequestParam("orderBy") String orderBy,
