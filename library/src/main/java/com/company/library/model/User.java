@@ -5,6 +5,7 @@ import javax.validation.constraints.NotBlank;
 import java.sql.Blob;
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Set;
 
@@ -36,6 +37,9 @@ public class User {
 
     @OneToMany(cascade = CascadeType.ALL)
     private List<Penalty> penalties = new ArrayList<>();
+
+    @OneToMany(fetch = FetchType.LAZY,cascade = CascadeType.ALL,orphanRemoval = true)
+    private List<Genre> genres = new ArrayList<>();
 
     @ManyToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     @JoinTable(
@@ -115,6 +119,14 @@ public class User {
         this.penalties.add(penalty);
     }
 
+    public List<Genre> getGenres() {
+        return genres;
+    }
+
+    public void setGenres(List<Genre> genres) {
+        this.genres = genres;
+    }
+
     public boolean isBanned() {
         return isBanned;
     }
@@ -123,21 +135,6 @@ public class User {
         isBanned = banned;
     }
 
-
-    @Override
-    public String toString() {
-        final StringBuilder sb = new StringBuilder("User{");
-        sb.append("id=").append(id);
-        sb.append(", firstName='").append(firstName).append('\'');
-        sb.append(", lastName='").append(lastName).append('\'');
-        sb.append(", email='").append(email).append('\'');
-        sb.append(", password='").append(password).append('\'');
-        sb.append(", img=").append(img);
-        sb.append(", isAdmin=").append(isAdmin);
-        sb.append(", roles=").append(roles);
-        sb.append('}');
-        return sb.toString();
-    }
 
     //delete old penalties that are not any more valid
     public void clearOldPenalties() {

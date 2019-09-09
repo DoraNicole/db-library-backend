@@ -14,7 +14,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 
-import java.util.List;
+import java.util.*;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
@@ -23,6 +23,9 @@ public class BookService implements BookServiceInterface {
 
     @Autowired
     private BookRepositoryInterface bookRepositoryInterface;
+
+    @Autowired
+    private UserService userService;
 
     @Override
     public void addBook(Book book) {
@@ -64,6 +67,56 @@ public class BookService implements BookServiceInterface {
         List<Book> list = bookRepositoryInterface.findAll(sort).stream().filter(titleExist.or(genreExist).or(authorExist)).collect(Collectors.toList());
 
         PagedListHolder<Book> pagedListHolder = new PagedListHolder<>(list);
+        pagedListHolder.setPageSize(size);
+        pagedListHolder.setPage(page);
+        ResponsePageList<Book> response = new ResponsePageList<>();
+        response.setNrOfElements(pagedListHolder.getNrOfElements());
+        response.setPageList(pagedListHolder.getPageList());
+        return response;
+
+    }
+
+    @Override
+    public ResponsePageList<Book> findPreferredBooks(String orderBy, String direction, int page, int size, String id) {
+        Sort sort = null;
+        if (direction.equals("ASC")) {
+            sort = new Sort(Sort.Direction.ASC, orderBy);
+        }
+        if (direction.equals("DESC")) {
+            sort = new Sort(Sort.Direction.DESC, orderBy);
+        }
+
+        if (!(direction.equals(Direction.ASCENDING.getDirectionCode()) || direction.equals(Direction.DESCENDING.getDirectionCode()))) {
+            throw new PaginationSortingException("Invalid sort direction");
+        }
+        if (!(orderBy.equals(OrderBy.ID.getOrderByCode()) || orderBy.equals(OrderBy.TITLE.getOrderByCode()))) {
+            throw new PaginationSortingException("Invalid orderBy condition");
+        }
+
+        User user = userService.findById(Long.parseLong(id)).orElse(null);
+//      List<Genre> genreList = user.getGenres();
+        List<Genre> genreList = new ArrayList<Genre>();
+            Genre g1 = new Genre();
+            Genre g2 = new Genre();
+            g1.setId(1L); g1.setName("Dezvoltare Personala");
+            g2.setId(2L); g2.setName("Self Help");
+            genreList.add(g1); genreList.add(g2);
+
+        Set<Book> bookSet = new HashSet<>();
+        int i;
+
+        for(i = 0; i < genreList.size(); i++){
+            Genre currentGenre = genreList.get(i);
+
+            Predicate<Genre> foundInGenre = genre -> genre.getName().toLowerCase().contains(currentGenre.getName().toLowerCase());
+            Predicate<Book> genreExist = book -> book.getGenres().stream().anyMatch(foundInGenre);
+            List<Book> list = bookRepositoryInterface.findAll(sort).stream().filter(genreExist)
+                    .collect(Collectors.toList());
+
+            bookSet.addAll(list);
+        }
+        System.out.println(bookSet);
+        PagedListHolder<Book> pagedListHolder = new PagedListHolder<>(new ArrayList<>(bookSet));
         pagedListHolder.setPageSize(size);
         pagedListHolder.setPage(page);
         ResponsePageList<Book> response = new ResponsePageList<>();

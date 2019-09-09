@@ -28,7 +28,7 @@ public class VerificationToken {
     public VerificationToken(User user) {
         this.user = user;
         this.token = UUID.randomUUID().toString();
-        this.expiryDateTime = LocalDateTime.now().plus(1, ChronoUnit.DAYS);
+        this.expiryDateTime = LocalDateTime.now().plus(3, ChronoUnit.DAYS);
     }
 
     public Long getId() {
