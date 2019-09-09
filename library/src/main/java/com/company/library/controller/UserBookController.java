@@ -54,7 +54,7 @@ public class UserBookController {
 
     @DeleteMapping("/removeUserBook/{id}")
     public void removeUserBook(@PathVariable(value = "id") Long id){
-        userBookService.remove(id);
+        userBookService.removeById(id);
     }
 
     @GetMapping("/getBorrowedBooks")
@@ -69,8 +69,7 @@ public class UserBookController {
     }
 
     @PostMapping("/returnBook")
-    public void returnBook(@RequestParam("id") Long userId, @RequestBody Book book){
-        userBookService.returnBorrowBook(userId, book.getId());
-
+    public void returnBook(@RequestParam("id") Long userId){
+        userBookService.returnBorrowBook(userId);
     }
 }

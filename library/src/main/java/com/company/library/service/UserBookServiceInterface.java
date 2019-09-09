@@ -11,9 +11,9 @@ public interface UserBookServiceInterface {
 
     void addUserBook(UserBook userBook) throws UserHasPenaltiesException, BookOutOfStock;
     List<UserBook> getUserBooks();
-    void remove(Long userBookId);
     void sendReminder();
     ResponsePageList<UserBook> getBorrowedBooks(String orderBy, String direction, int page, int size, String id);
-    void returnBorrowBook(Long userId, Long bookId);
+    void returnBorrowBook(Long userBookId);
     void changeUserBookPenalty(Long userBookId);
+    void removeById(Long userBookId);
 }
