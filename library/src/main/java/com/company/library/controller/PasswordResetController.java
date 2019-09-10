@@ -40,7 +40,7 @@ public class PasswordResetController {
         return ResponseEntity.ok(userService.saveNewPassword(passwordResetDTO.getEmail(), passwordResetDTO.getPassword()));
     }
 
-    @GetMapping("/forgotpassword")
+    @PostMapping("/forgotpassword")
     public void forgotPassword(@RequestBody PasswordForgottenDTO passwordForgottenDTO, HttpServletRequest request) {
         link = false;
 
