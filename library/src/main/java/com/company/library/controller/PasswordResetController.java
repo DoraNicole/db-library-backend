@@ -15,6 +15,8 @@ import org.springframework.web.bind.annotation.*;
 import javax.servlet.http.HttpServletRequest;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.HashMap;
+import java.util.Map;
 
 @RestController
 public class PasswordResetController {
@@ -23,6 +25,9 @@ public class PasswordResetController {
     private static final String linkFrontend = "http://localhost:4200";
 
     private String key;
+
+    Map<String, String> map = new HashMap<>();
+    long i;
 
     @Autowired
     private UserService userService;
@@ -40,8 +45,8 @@ public class PasswordResetController {
     public ResponseEntity<?> resetPassword(@RequestBody PasswordResetDTO passwordResetDTO, @RequestParam("random") String random) {
 
         ResponseEntity responseEntity = new ResponseEntity(HttpStatus.BAD_REQUEST);
-
-        if (random.equals(key)) {
+        String k = map.get(passwordResetDTO.getEmail());
+        if (random.equals(k)) {
             link = true;
             return ResponseEntity.ok(userService.saveNewPassword(passwordResetDTO.getEmail(), passwordResetDTO.getPassword()));
         }
@@ -71,9 +76,12 @@ public class PasswordResetController {
                 message.setSubject("Password reset");
                 message.setText(String.format("You have requested a password reset, here is your unique code: " + random + ". Now please click the following link to reset your password : %s", url));
                 emailService.sendEmail(message);
+
+
                 key = random;
 
-                return key;
+                map.put(passwordForgottenDTO.getEmail(), key);
+                return map.get(passwordForgottenDTO.getEmail());
 
             } else {
                 System.out.println("This email doesn't exist in the database!");
