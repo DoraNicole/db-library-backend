@@ -53,8 +53,9 @@ public class PasswordResetController {
         else return responseEntity;
     }
 
-    @GetMapping("/forgotpassword")
-    public String forgotPassword(@RequestBody PasswordForgottenDTO passwordForgottenDTO, HttpServletRequest request) {
+
+    @PostMapping("/forgotpassword")
+    public void forgotPassword(@RequestBody PasswordForgottenDTO passwordForgottenDTO, HttpServletRequest request) {
         link = false;
 
         if (link == false) {

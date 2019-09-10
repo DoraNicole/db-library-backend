@@ -2,6 +2,7 @@ package com.company.library.controller;
 
 import com.company.library.DTO.Registration;
 import com.company.library.exceptions.EmailExistsException;
+import com.company.library.exceptions.VerificationTokenException;
 import com.company.library.model.User;
 import com.company.library.model.VerificationToken;
 import com.company.library.repository.VerificationTokenRepository;
@@ -11,6 +12,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.mail.SimpleMailMessage;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
@@ -78,7 +80,7 @@ public class ActivateAccountController {
             throw new RuntimeException("The user " + email + " does not have an active associated token!");
         }
 
-        oldToken.setExpiryDateTime(LocalDateTime.from(LocalDateTime.of(2000,11,12, 0, 0, 0)));
+        oldToken.setExpiryDateTime(LocalDateTime.from(LocalDateTime.of(2000, 11, 12, 0, 0, 0)));
         VerificationToken newToken = new VerificationToken(user);
         VerificationToken savedToken = verificationTokenRepository.save(newToken);
 
@@ -99,23 +101,30 @@ public class ActivateAccountController {
     }
 
     @GetMapping("/registerConfirm")
-    public String registerConfirm(@RequestParam("token") String token) {
+    public void registerConfirm(@RequestParam("token") String token) {
         VerificationToken storedToken = verificationTokenRepository.findByToken(token);
 
         if (storedToken == null) {
-            return "The token you have provided is invalid!";
+            throw new VerificationTokenException("Invalid token provided!");
         }
 
         if (storedToken.isExpired()) {
             verificationTokenRepository.delete(storedToken);
             userService.delete(storedToken.getUser());
-            return "Your registration token has expired! Please try to register again!";
+            throw new VerificationTokenException("The token is expired! Please register again!");
         }
 
         User registeredUser = storedToken.getUser();
         registeredUser.setEnabled(true);
         userService.save(registeredUser);
+        verificationTokenRepository.delete(storedToken);
 
-        return "Your account was successfully activated!";
+
+    }
+
+    @PreAuthorize("hasRole('ADMIN')")
+    @GetMapping("/findVerificationTokenByEmail")
+    public VerificationToken findVerificationTokenByEmail(@RequestParam("email") String email) {
+        return this.verificationTokenRepository.findAll().stream().filter(verificationToken -> verificationToken.getUser().getEmail().equals(email)).findFirst().orElse(null);
     }
 }
