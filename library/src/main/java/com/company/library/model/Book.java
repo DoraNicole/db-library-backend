@@ -34,6 +34,8 @@ public class Book {
     @OneToMany(fetch = FetchType.LAZY,cascade = CascadeType.ALL,orphanRemoval = true)
     private List<Rating> ratings;
 
+    private Double averageStars;
+
 
     @Column(columnDefinition="TEXT")
     private String description;
