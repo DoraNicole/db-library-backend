@@ -4,9 +4,11 @@ import com.company.library.model.Role;
 import com.company.library.repository.RoleRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
+import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Component;
 
 @Component
+@Order(99)
 public class RoleData implements CommandLineRunner {
 
     private final RoleRepository roleRepository;

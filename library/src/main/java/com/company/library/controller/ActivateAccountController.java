@@ -56,6 +56,7 @@ public class ActivateAccountController {
         message.setTo(registered.getEmail());
         message.setSubject("Welcome to our library platform!");
         message.setText(String.format("Please click the following link to confirm your account activation : %s", url));
+
         emailService.sendEmail(message);
         return registered;
 
