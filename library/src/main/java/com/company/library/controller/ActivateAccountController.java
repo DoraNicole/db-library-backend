@@ -64,7 +64,7 @@ public class ActivateAccountController {
     }
 
     @PostMapping("/resendVerificationLink")
-    public String resendVerification(HttpServletRequest request, @RequestBody String email) {
+    public void resendVerification(HttpServletRequest request, @RequestBody String email) {
 
         User user = userService.findUserByEmail(email);
 
@@ -95,9 +95,8 @@ public class ActivateAccountController {
         SimpleMailMessage message = new SimpleMailMessage();
         message.setTo(user.getEmail());
         message.setSubject("Welcome to our library platform!");
-        message.setText(String.format("Please click the following link to confirm your account activation : %s", url));
+        message.setText(String.format("Your code is: " + savedToken.getToken() + " Please click the following link to confirm your account activation : %s", url));
         emailService.sendEmail(message);
-        return "successfully resent verification link";
     }
 
     @GetMapping("/registerConfirm")
