@@ -35,6 +35,16 @@ public class User {
 
     private boolean isBanned;
 
+    public LocalDate getBanUntil() {
+        return banUntil;
+    }
+
+    public void setBanUntil(LocalDate banUntil) {
+        this.banUntil = banUntil;
+    }
+
+    private LocalDate banUntil;
+
     @OneToMany(cascade = CascadeType.ALL)
     private List<Penalty> penalties = new ArrayList<>();
 
