@@ -38,8 +38,13 @@ public class User {
     @OneToMany(cascade = CascadeType.ALL)
     private List<Penalty> penalties = new ArrayList<>();
 
-    @OneToMany(fetch = FetchType.LAZY,cascade = CascadeType.ALL,orphanRemoval = true)
-    private List<Genre> genres = new ArrayList<>();
+    @ManyToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    @JoinTable(
+            name = "user_genres",
+            joinColumns = @JoinColumn(name = "user_id"),
+            inverseJoinColumns = @JoinColumn(name = "genre_id")
+    )
+    private Set<Genre> preferences;
 
     @ManyToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     @JoinTable(
@@ -119,14 +124,6 @@ public class User {
         this.penalties.add(penalty);
     }
 
-    public List<Genre> getGenres() {
-        return genres;
-    }
-
-    public void setGenres(List<Genre> genres) {
-        this.genres = genres;
-    }
-
     public boolean isBanned() {
         return isBanned;
     }
@@ -158,5 +155,13 @@ public class User {
 
     public void setEnabled(boolean enabled) {
         this.enabled = enabled;
+    }
+
+    public Set<Genre> getPreferences() {
+        return preferences;
+    }
+
+    public void setPreferences(Set<Genre> preferences) {
+        this.preferences = preferences;
     }
 }
