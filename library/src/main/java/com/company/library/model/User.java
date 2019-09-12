@@ -10,6 +10,7 @@ import java.util.List;
 import java.util.Set;
 
 @Entity
+@Table(name = "users")
 public class User {
 
     @Id
@@ -28,7 +29,7 @@ public class User {
     @NotBlank
     private String password;
 
-    @OneToOne(fetch = FetchType.LAZY,cascade = CascadeType.ALL,orphanRemoval = true)
+    @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
     private ImageModel img;
 
     private boolean isAdmin;
@@ -45,6 +46,7 @@ public class User {
             inverseJoinColumns = @JoinColumn(name = "genre_id")
     )
     private Set<Genre> preferences;
+
 
     @ManyToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     @JoinTable(
@@ -112,7 +114,7 @@ public class User {
         isAdmin = admin;
     }
 
-      public List<Penalty> getPenalties() {
+    public List<Penalty> getPenalties() {
         return penalties;
     }
 
@@ -120,7 +122,7 @@ public class User {
         this.penalties = penalties;
     }
 
-    public void addPenalty(Penalty penalty){
+    public void addPenalty(Penalty penalty) {
         this.penalties.add(penalty);
     }
 
@@ -136,10 +138,9 @@ public class User {
     //delete old penalties that are not any more valid
     public void clearOldPenalties() {
         penalties.stream()
-                .filter(t->t.getPenaltyAddedDate().plusMonths(Penalty.numberOfMonthsPenaltyExist).isBefore(LocalDate.now()))
-                .forEach(t-> penalties.remove(t));
+                .filter(t -> t.getPenaltyAddedDate().plusMonths(Penalty.numberOfMonthsPenaltyExist).isBefore(LocalDate.now()))
+                .forEach(t -> penalties.remove(t));
     }
-
 
     public Set<Role> getRoles() {
         return roles;
