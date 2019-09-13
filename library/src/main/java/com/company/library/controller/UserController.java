@@ -3,7 +3,9 @@ package com.company.library.controller;
 import com.company.library.model.ResponsePageList;
 import com.company.library.model.Role;
 import com.company.library.model.User;
+import com.company.library.model.UserBook;
 import com.company.library.repository.RoleRepository;
+import com.company.library.service.EmailService;
 import com.company.library.service.UserBookServiceInterface;
 import com.company.library.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,7 +28,8 @@ public class UserController {
     @Autowired
     private RoleRepository roleRepository;
 
-
+    @Autowired
+    private EmailService emailService;
 
     @GetMapping("/allusers")
     List<User> findAll() {
@@ -81,4 +84,6 @@ public class UserController {
    public void checkForPenalties(@RequestBody User user){
         userService.checkForPenalties(user);
     }
+
+
 }

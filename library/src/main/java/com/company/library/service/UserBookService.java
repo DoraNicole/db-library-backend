@@ -15,8 +15,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.support.PagedListHolder;
 import org.springframework.data.domain.Sort;
 import org.springframework.mail.SimpleMailMessage;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
 import java.util.List;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
@@ -65,18 +67,12 @@ public class UserBookService implements UserBookServiceInterface {
         return userBookRepositoryInterface.findAll();
     }
 
-    //@Scheduled(cron = "0 * * * * ?")
+    @Scheduled(cron = "0 * * * * *")
     public void sendReminder() {
         List<UserBook> list = userBookRepositoryInterface.remindUsers();
-        for (UserBook u : list) {
-            User user = u.getUser();
-            SimpleMailMessage messageReturn = new SimpleMailMessage();
-            messageReturn.setTo(user.getEmail());
-            messageReturn.setSubject("Book return notification");
-            messageReturn.setText("Reminder to return your book. You have one day left.");
-            emailService.sendEmail(messageReturn);
-        }
+            list.forEach(t->emailService.sendAlmostReturnDateEmail(t));
     }
+
 
 
     @Override
