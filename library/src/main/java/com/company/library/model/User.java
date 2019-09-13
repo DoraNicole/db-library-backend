@@ -2,10 +2,8 @@ package com.company.library.model;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
-import java.sql.Blob;
 import java.time.LocalDate;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Set;
 
@@ -39,13 +37,13 @@ public class User {
     @OneToMany(cascade = CascadeType.ALL)
     private List<Penalty> penalties = new ArrayList<>();
 
-    @ManyToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    @ManyToMany(cascade = CascadeType.ALL)
     @JoinTable(
             name = "user_genres",
             joinColumns = @JoinColumn(name = "user_id"),
             inverseJoinColumns = @JoinColumn(name = "genre_id")
     )
-    private Set<Genre> preferences;
+    private List<Genre> preferences;
 
 
     @ManyToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
@@ -158,11 +156,11 @@ public class User {
         this.enabled = enabled;
     }
 
-    public Set<Genre> getPreferences() {
+    public List<Genre> getPreferences() {
         return preferences;
     }
 
-    public void setPreferences(Set<Genre> preferences) {
+    public void setPreferences(List<Genre> preferences) {
         this.preferences = preferences;
     }
 }

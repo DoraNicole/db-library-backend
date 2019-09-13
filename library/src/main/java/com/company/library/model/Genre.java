@@ -2,6 +2,7 @@ package com.company.library.model;
 import javax.persistence.*;
 
 @Entity
+@Table(name = "GENRE")
 public class Genre {
 
     @Id
@@ -25,4 +26,5 @@ public class Genre {
     public void setName(String name) {
         this.name = name;
     }
+
 }

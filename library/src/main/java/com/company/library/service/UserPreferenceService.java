@@ -6,11 +6,14 @@ import com.company.library.model.User;
 import com.company.library.repository.BookRepositoryInterface;
 import com.company.library.repository.UserRepositoryInterface;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Collection;
+import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -29,7 +32,7 @@ public class UserPreferenceService {
 
 
     @Transactional
-    public void save(Set<Genre> preferences, UserDetails userDetails) {
+    public void save(List<Genre> preferences, UserDetails userDetails) {
         User user = userRepository.findByEmail(userDetails.getUsername());
         user.setPreferences(preferences);
         userRepository.save(user);
@@ -47,7 +50,9 @@ public class UserPreferenceService {
         return bookRepository.findBookByGenresNameIn(
                 preferredGenres.stream()
                 .map(Genre::getName)
-                .collect(Collectors.toList())
-        );
+                .collect(Collectors.toList()),
+                PageRequest.of(0, 10)
+        )
+                .getContent();
     }
 }

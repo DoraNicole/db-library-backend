@@ -6,11 +6,16 @@ import com.company.library.exceptions.PaginationSortingException;
 import com.company.library.exceptions.PagingSortingErrorResponse;
 import com.company.library.model.*;
 import com.company.library.repository.BookRepositoryInterface;
+import com.company.library.repository.GenreRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.support.PagedListHolder;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 
@@ -27,9 +32,27 @@ public class BookService implements BookServiceInterface {
     @Autowired
     private UserService userService;
 
+    @Autowired
+    private GenreRepository genreRepository;
+
     @Override
     public void addBook(Book book) {
-        bookRepositoryInterface.saveAndFlush(book);
+        //save genres
+        List<Genre> databaseGenres = book.getGenres().stream()
+                .map(g -> {
+                    Genre dbGenre = genreRepository.findByName(g.getName());
+                    if (dbGenre == null) {
+                        return g;
+                    } else {
+                        return dbGenre;
+                    }
+                })
+                .collect(Collectors.toList());
+
+        book.setGenres(databaseGenres);
+
+        //save book
+        bookRepositoryInterface.save(book);
     }
 
     @Override
@@ -77,52 +100,56 @@ public class BookService implements BookServiceInterface {
     }
 
     @Override
-    public ResponsePageList<Book> findPreferredBooks(String orderBy, String direction, int page, int size, String id) {
-        Sort sort = null;
-        if (direction.equals("ASC")) {
-            sort = new Sort(Sort.Direction.ASC, orderBy);
-        }
-        if (direction.equals("DESC")) {
-            sort = new Sort(Sort.Direction.DESC, orderBy);
-        }
+    public Page<Book> findPreferredBooks(String orderBy, String direction, int page, int size, UserDetails userDetails) {
+//        Sort sort = null;
+//        if (direction.equals("ASC")) {
+//            sort = new Sort(Sort.Direction.ASC, orderBy);
+//        }
+//        if (direction.equals("DESC")) {
+//            sort = new Sort(Sort.Direction.DESC, orderBy);
+//        }
+//
+//        if (!(direction.equals(Direction.ASCENDING.getDirectionCode()) || direction.equals(Direction.DESCENDING.getDirectionCode()))) {
+//            throw new PaginationSortingException("Invalid sort direction");
+//        }
+//        if (!(orderBy.equals(OrderBy.ID.getOrderByCode()) || orderBy.equals(OrderBy.TITLE.getOrderByCode()))) {
+//            throw new PaginationSortingException("Invalid orderBy condition");
+//        }
 
-        if (!(direction.equals(Direction.ASCENDING.getDirectionCode()) || direction.equals(Direction.DESCENDING.getDirectionCode()))) {
-            throw new PaginationSortingException("Invalid sort direction");
-        }
-        if (!(orderBy.equals(OrderBy.ID.getOrderByCode()) || orderBy.equals(OrderBy.TITLE.getOrderByCode()))) {
-            throw new PaginationSortingException("Invalid orderBy condition");
-        }
+        User user = userService.findUserByEmail(userDetails.getUsername());
+        Pageable p = PageRequest.of(page, size, new Sort(Sort.Direction.valueOf(direction), Collections.singletonList(orderBy)));
 
-        User user = userService.findById(Long.parseLong(id)).orElse(null);
-//      List<Genre> genreList = user.getGenres();
-        List<Genre> genreList = new ArrayList<Genre>();
-            Genre g1 = new Genre();
-            Genre g2 = new Genre();
-            g1.setId(1L); g1.setName("Dezvoltare Personala");
-            g2.setId(2L); g2.setName("Self Help");
-            genreList.add(g1); genreList.add(g2);
+        return bookRepositoryInterface.findBookByGenresNameIn(
+                user.getPreferences().stream().map(Genre::getName).collect(Collectors.toList()),
+                p
+        );
 
-        Set<Book> bookSet = new HashSet<>();
-        int i;
 
-        for(i = 0; i < genreList.size(); i++){
-            Genre currentGenre = genreList.get(i);
-
-            Predicate<Genre> foundInGenre = genre -> genre.getName().toLowerCase().contains(currentGenre.getName().toLowerCase());
-            Predicate<Book> genreExist = book -> book.getGenres().stream().anyMatch(foundInGenre);
-            List<Book> list = bookRepositoryInterface.findAll(sort).stream().filter(genreExist)
-                    .collect(Collectors.toList());
-
-            bookSet.addAll(list);
-        }
-        System.out.println(bookSet);
-        PagedListHolder<Book> pagedListHolder = new PagedListHolder<>(new ArrayList<>(bookSet));
-        pagedListHolder.setPageSize(size);
-        pagedListHolder.setPage(page);
-        ResponsePageList<Book> response = new ResponsePageList<>();
-        response.setNrOfElements(pagedListHolder.getNrOfElements());
-        response.setPageList(pagedListHolder.getPageList());
-        return response;
+//      List<Genre> genreList = user.getPreferences();
+//
+//
+//
+//        Set<Book> bookSet = new HashSet<>();
+//        int i;
+//
+//        for(i = 0; i < genreList.size(); i++){
+//            Genre currentGenre = genreList.get(i);
+//
+//            Predicate<Genre> foundInGenre = genre -> genre.getName().toLowerCase().contains(currentGenre.getName().toLowerCase());
+//            Predicate<Book> genreExist = book -> book.getGenres().stream().anyMatch(foundInGenre);
+//            List<Book> list = bookRepositoryInterface.findAll(sort).stream().filter(genreExist)
+//                    .collect(Collectors.toList());
+//
+//            bookSet.addAll(list);
+//        }
+//        System.out.println(bookSet);
+//        PagedListHolder<Book> pagedListHolder = new PagedListHolder<>(new ArrayList<>(bookSet));
+//        pagedListHolder.setPageSize(size);
+//        pagedListHolder.setPage(page);
+//        ResponsePageList<Book> response = new ResponsePageList<>();
+//        response.setNrOfElements(pagedListHolder.getNrOfElements());
+//        response.setPageList(pagedListHolder.getPageList());
+//        return response;
 
     }
     @Override

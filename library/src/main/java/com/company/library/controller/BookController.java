@@ -8,9 +8,12 @@ import com.company.library.service.RatingServiceInterface;
 import com.company.library.service.UserBookServiceInterface;
 import com.company.library.service.UserServiceInterface;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.*;
@@ -61,14 +64,14 @@ public class BookController {
     }
 
     @GetMapping("/preferredBooks")
-    public ResponseEntity<ResponsePageList<Book>> findPreferredBooks(
+    public Page<Book> findPreferredBooks(
             @RequestParam("orderBy") String orderBy,
             @RequestParam("direction") String direction,
             @RequestParam("page") int page,
             @RequestParam("size") int size,
-            @RequestParam("id") String id
+            @AuthenticationPrincipal UserDetails userDetails
     ) {
-        return new ResponseEntity<>(bookService.findPreferredBooks(orderBy, direction, page, size, id), HttpStatus.OK);
+        return bookService.findPreferredBooks(orderBy, direction, page, size, userDetails);
     }
     @GetMapping("/sameGenreBooks")
     public ResponseEntity<ResponsePageList<Book>> findSameGenreBooks(

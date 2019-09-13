@@ -9,6 +9,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Collection;
+import java.util.List;
 import java.util.Set;
 
 @RestController
@@ -23,7 +24,7 @@ public class UserPreferenceController {
     }
 
     @PostMapping
-    public void save(@RequestBody Set<Genre> preferences, @AuthenticationPrincipal UserDetails userDetails) {
+    public void save(@RequestBody List<Genre> preferences, @AuthenticationPrincipal UserDetails userDetails) {
         userPreferenceService.save(preferences, userDetails);
     }
 
