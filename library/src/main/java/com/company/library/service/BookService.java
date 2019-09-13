@@ -94,18 +94,15 @@ public class BookService implements BookServiceInterface {
         }
 
         User user = userService.findById(Long.parseLong(id)).orElse(null);
-//      List<Genre> genreList = user.getGenres();
-        List<Genre> genreList = new ArrayList<Genre>();
-            Genre g1 = new Genre();
-            Genre g2 = new Genre();
-            g1.setId(1L); g1.setName("Dezvoltare Personala");
-            g2.setId(2L); g2.setName("Self Help");
-            genreList.add(g1); genreList.add(g2);
 
-        Set<Book> bookSet = new HashSet<>();
+        assert user != null;
+        List<Genre> genreList = user.getGenres();
+
+        List<Book> bookSet = new ArrayList<>();
+
         int i;
 
-        for(i = 0; i < genreList.size(); i++){
+        for (i = 0; i < genreList.size(); i++) {
             Genre currentGenre = genreList.get(i);
 
             Predicate<Genre> foundInGenre = genre -> genre.getName().toLowerCase().contains(currentGenre.getName().toLowerCase());
@@ -113,7 +110,9 @@ public class BookService implements BookServiceInterface {
             List<Book> list = bookRepositoryInterface.findAll(sort).stream().filter(genreExist)
                     .collect(Collectors.toList());
 
-            bookSet.addAll(list);
+            List<Book> updated = list.stream().filter(book -> !bookSet.contains(book)).collect(Collectors.toList());
+
+            bookSet.addAll(updated);
         }
         System.out.println(bookSet);
         PagedListHolder<Book> pagedListHolder = new PagedListHolder<>(new ArrayList<>(bookSet));
@@ -125,6 +124,7 @@ public class BookService implements BookServiceInterface {
         return response;
 
     }
+
     @Override
     public ResponsePageList<Book> findSameGenreBooks(String orderBy, String direction, int page, int size, String id) {
         Sort sort = null;
@@ -147,7 +147,7 @@ public class BookService implements BookServiceInterface {
         Set<Book> bookSet = new HashSet<>();
         int i;
 
-        for(i = 0; i < genreList.size(); i++){
+        for (i = 0; i < genreList.size(); i++) {
             Genre currentGenre = genreList.get(i);
 
             Predicate<Genre> foundInGenre = genre -> genre.getName().toLowerCase().contains(currentGenre.getName().toLowerCase());
