@@ -54,7 +54,7 @@ public class UserController {
         }
     }
 
-    //@PreAuthorize("hasRole('ADMIN')")
+    @PreAuthorize("hasRole('ADMIN')")
     @GetMapping("/paginatedUsers")
     public ResponseEntity<ResponsePageList<User>> findPaginatedUsers(
             @RequestParam("orderBy") String orderBy,
@@ -66,7 +66,6 @@ public class UserController {
         return new ResponseEntity<>(userService.findPaginatedUsers(orderBy, direction, page, size, query), HttpStatus.OK);
     }
 
-    //@PreAuthorize("hasRole('ADMIN')")
     @PostMapping("/updateUser")
     public void updateUser(@RequestBody User user){
        userService.save(user);

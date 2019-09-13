@@ -2,10 +2,8 @@ package com.company.library.model;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
-import java.sql.Blob;
 import java.time.LocalDate;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Set;
 
@@ -49,12 +47,7 @@ public class User {
     @OneToMany(cascade = CascadeType.ALL)
     private List<Penalty> penalties = new ArrayList<>();
 
-    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
-//    @JoinTable(
-//            name = "user_genres",
-//            joinColumns = @JoinColumn(name = "user_id"),
-//            inverseJoinColumns = @JoinColumn(name = "genre_id")
-//    )
+    @OneToMany(fetch = FetchType.LAZY,cascade = CascadeType.ALL,orphanRemoval = true)
     private List<Genre> genres;
 
 
@@ -167,14 +160,6 @@ public class User {
     public void setEnabled(boolean enabled) {
         this.enabled = enabled;
     }
-//
-//    public Set<Genre> getPreferences() {
-//        return preferences;
-//    }
-//
-//    public void setPreferences(Set<Genre> preferences) {
-//        this.preferences = preferences;
-//    }
 
     public List<Genre> getGenres() {
         return genres;

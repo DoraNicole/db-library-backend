@@ -1,7 +1,6 @@
 package com.company.library.controller;
 
 import com.company.library.model.Book;
-import com.company.library.model.Rating;
 import com.company.library.model.ResponsePageList;
 import com.company.library.service.BookServiceInterface;
 import com.company.library.service.RatingServiceInterface;
