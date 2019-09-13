@@ -34,6 +34,8 @@ public class User {
 
     private boolean isBanned;
 
+    private boolean skipped;
+
     public LocalDate getBanUntil() {
         return banUntil;
     }
@@ -167,5 +169,13 @@ public class User {
 
     public void setGenres(List<Genre> genres) {
         this.genres = genres;
+    }
+
+    public boolean isSkipped() {
+        return skipped;
+    }
+
+    public void setSkipped(boolean skipped) {
+        this.skipped = skipped;
     }
 }
