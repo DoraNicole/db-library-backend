@@ -1,7 +1,6 @@
 package com.company.library.controller;
 
 import com.company.library.model.Book;
-import com.company.library.model.Rating;
 import com.company.library.model.ResponsePageList;
 import com.company.library.service.BookServiceInterface;
 import com.company.library.service.RatingServiceInterface;
@@ -69,6 +68,16 @@ public class BookController {
             @RequestParam("id") String id
     ) {
         return new ResponseEntity<>(bookService.findPreferredBooks(orderBy, direction, page, size, id), HttpStatus.OK);
+    }
+    @GetMapping("/sameGenreBooks")
+    public ResponseEntity<ResponsePageList<Book>> findSameGenreBooks(
+            @RequestParam("orderBy") String orderBy,
+            @RequestParam("direction") String direction,
+            @RequestParam("page") int page,
+            @RequestParam("size") int size,
+            @RequestParam("id") String id
+    ) {
+        return new ResponseEntity<>(bookService.findSameGenreBooks(orderBy, direction, page, size, id), HttpStatus.OK);
     }
 
     @GetMapping("/searchBookById")

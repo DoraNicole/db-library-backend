@@ -74,7 +74,7 @@ public class UserService implements UserServiceInterface {
 
         User newUser = new User();
 
-        if (userDto.getEmail().equals("librarymaster0@gmail.com") && userDto.getPassword().equals("qwerty1234.")) {
+        if (userDto.getEmail().equals("librarymaster0@gmail.com")) {
             Role adminRole = roleRepository.findByName("ROLE_ADMIN");
             newUser.setFirstName(userDto.getFirstName());
             newUser.setLastName(userDto.getLastName());

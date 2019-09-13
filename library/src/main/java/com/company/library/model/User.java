@@ -2,14 +2,13 @@ package com.company.library.model;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
-import java.sql.Blob;
 import java.time.LocalDate;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Set;
 
 @Entity
+@Table(name = "users")
 public class User {
 
     @Id
@@ -28,18 +27,29 @@ public class User {
     @NotBlank
     private String password;
 
-    @OneToOne(fetch = FetchType.LAZY,cascade = CascadeType.ALL,orphanRemoval = true)
+    @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
     private ImageModel img;
 
     private boolean isAdmin;
 
     private boolean isBanned;
 
+    public LocalDate getBanUntil() {
+        return banUntil;
+    }
+
+    public void setBanUntil(LocalDate banUntil) {
+        this.banUntil = banUntil;
+    }
+
+    private LocalDate banUntil;
+
     @OneToMany(cascade = CascadeType.ALL)
     private List<Penalty> penalties = new ArrayList<>();
 
     @OneToMany(fetch = FetchType.LAZY,cascade = CascadeType.ALL,orphanRemoval = true)
-    private List<Genre> genres = new ArrayList<>();
+    private List<Genre> genres;
+
 
     @ManyToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     @JoinTable(
@@ -107,7 +117,7 @@ public class User {
         isAdmin = admin;
     }
 
-      public List<Penalty> getPenalties() {
+    public List<Penalty> getPenalties() {
         return penalties;
     }
 
@@ -115,16 +125,8 @@ public class User {
         this.penalties = penalties;
     }
 
-    public void addPenalty(Penalty penalty){
+    public void addPenalty(Penalty penalty) {
         this.penalties.add(penalty);
-    }
-
-    public List<Genre> getGenres() {
-        return genres;
-    }
-
-    public void setGenres(List<Genre> genres) {
-        this.genres = genres;
     }
 
     public boolean isBanned() {
@@ -139,10 +141,9 @@ public class User {
     //delete old penalties that are not any more valid
     public void clearOldPenalties() {
         penalties.stream()
-                .filter(t->t.getPenaltyAddedDate().plusMonths(Penalty.numberOfMonthsPenaltyExist).isBefore(LocalDate.now()))
-                .forEach(t-> penalties.remove(t));
+                .filter(t -> t.getPenaltyAddedDate().plusMonths(Penalty.numberOfMonthsPenaltyExist).isBefore(LocalDate.now()))
+                .forEach(t -> penalties.remove(t));
     }
-
 
     public Set<Role> getRoles() {
         return roles;
@@ -158,5 +159,13 @@ public class User {
 
     public void setEnabled(boolean enabled) {
         this.enabled = enabled;
+    }
+
+    public List<Genre> getGenres() {
+        return genres;
+    }
+
+    public void setGenres(List<Genre> genres) {
+        this.genres = genres;
     }
 }

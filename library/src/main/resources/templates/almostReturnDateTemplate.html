@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
+<head>
+    <style>
+
+        .container {
+            font-size: 21px;
+            width: 100%;
+            padding-right: 15px;
+            padding-left: 15px;
+            margin-right: auto;
+            margin-left: auto;
+        }
+
+        .row{
+            display: flex;
+        }
+
+    </style>
+</head>
+<body>
+
+<div class="container" style="margin-bottom: 50px"><pre>    Dear <span th:text="${firstName}"/>,</pre> </div>
+<div class="container">
+    <div class="row">
+        <div class="col" style="padding-top: 20px">
+            We hope you enjoyed reading this book. Tommorrow it is the date you have to return <br>
+            the book, <span th:text="${bookTitle}"/>, due to our terms and conditions, otherwise<br>
+            you will be penalised.
+        </div>
+        <div class="col">
+            <img style="width: 150px" src="https://cdn1.iconfinder.com/data/icons/everyday-objects-1/128/feather-ink-pen-512.png">
+        </div>
+    </div>
+</div>
+<div class="container">
+    <pre>  Yours sincerely,<br>Bookaholoic team.</pre>
+    <div>
+        <img alt="sigla"  style="width: 100px; margin-left: 30px" src="https://i.imgur.com/xyE5LSy.png">
+    </div>
+</div>
+
+</body>
+</html>
