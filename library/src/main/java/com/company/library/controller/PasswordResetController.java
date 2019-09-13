@@ -27,8 +27,9 @@ public class PasswordResetController {
 
     private String key;
 
+
+
     Map<String, String> map = new HashMap<>();
-    long i;
 
     @Autowired
     private UserService userService;
@@ -81,6 +82,7 @@ public class PasswordResetController {
                 key = random;
 
                 map.put(passwordForgottenDTO.getEmail(), key);
+
 
             } else {
                 System.out.println("This email doesn't exist in the database!");

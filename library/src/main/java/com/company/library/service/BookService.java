@@ -21,6 +21,12 @@ import java.util.stream.Collectors;
 @Service
 public class BookService implements BookServiceInterface {
 
+
+    public BookService(BookRepositoryInterface bookRepositoryInterface) {
+        super();
+        this.bookRepositoryInterface = bookRepositoryInterface;
+    }
+
     @Autowired
     private BookRepositoryInterface bookRepositoryInterface;
 
@@ -42,9 +48,10 @@ public class BookService implements BookServiceInterface {
         bookRepositoryInterface.deleteById(bookId);
     }
 
-    @Override
-    public ResponsePageList<Book> findPaginatedBooks(String orderBy, String direction, int page, int size, String query) {
+    public Sort sorting(String direction, String orderBy) {
+
         Sort sort = null;
+
         if (direction.equals("ASC")) {
             sort = new Sort(Sort.Direction.ASC, orderBy);
         }
@@ -58,6 +65,14 @@ public class BookService implements BookServiceInterface {
         if (!(orderBy.equals(OrderBy.ID.getOrderByCode()) || orderBy.equals(OrderBy.TITLE.getOrderByCode()))) {
             throw new PaginationSortingException("Invalid orderBy condition");
         }
+
+        return sort;
+    }
+
+    @Override
+    public ResponsePageList<Book> findPaginatedBooks(String orderBy, String direction, int page, int size, String query) {
+
+        Sort sort = sorting(direction, orderBy);
 
         Predicate<Book> titleExist = book -> book.getTitle().toLowerCase().contains(query.toLowerCase());
         Predicate<Genre> foundInGenre = genre -> genre.getName().toLowerCase().contains(query.toLowerCase());
@@ -69,29 +84,18 @@ public class BookService implements BookServiceInterface {
         PagedListHolder<Book> pagedListHolder = new PagedListHolder<>(list);
         pagedListHolder.setPageSize(size);
         pagedListHolder.setPage(page);
+
         ResponsePageList<Book> response = new ResponsePageList<>();
         response.setNrOfElements(pagedListHolder.getNrOfElements());
         response.setPageList(pagedListHolder.getPageList());
+
         return response;
 
     }
 
     @Override
     public ResponsePageList<Book> findPreferredBooks(String orderBy, String direction, int page, int size, String id) {
-        Sort sort = null;
-        if (direction.equals("ASC")) {
-            sort = new Sort(Sort.Direction.ASC, orderBy);
-        }
-        if (direction.equals("DESC")) {
-            sort = new Sort(Sort.Direction.DESC, orderBy);
-        }
-
-        if (!(direction.equals(Direction.ASCENDING.getDirectionCode()) || direction.equals(Direction.DESCENDING.getDirectionCode()))) {
-            throw new PaginationSortingException("Invalid sort direction");
-        }
-        if (!(orderBy.equals(OrderBy.ID.getOrderByCode()) || orderBy.equals(OrderBy.TITLE.getOrderByCode()))) {
-            throw new PaginationSortingException("Invalid orderBy condition");
-        }
+        Sort sort = sorting(direction, orderBy);
 
         User user = userService.findById(Long.parseLong(id)).orElse(null);
 
@@ -157,13 +161,16 @@ public class BookService implements BookServiceInterface {
 
             bookSet.addAll(list);
         }
+
         System.out.println(bookSet);
+
         PagedListHolder<Book> pagedListHolder = new PagedListHolder<>(new ArrayList<>(bookSet));
         pagedListHolder.setPageSize(size);
         pagedListHolder.setPage(page);
         ResponsePageList<Book> response = new ResponsePageList<>();
         response.setNrOfElements(pagedListHolder.getNrOfElements());
         response.setPageList(pagedListHolder.getPageList());
+
         return response;
 
     }
@@ -187,9 +194,8 @@ public class BookService implements BookServiceInterface {
         return bookRepositoryInterface.findBookById(id);
     }
 
-
+    @Override
     public double setAverageStars(Book book) {
-        book = findBookByIsbn(book.getIsbn());
         double result = 0;
         List<Rating> ratings = book.getRatings();
         int number = ratings.size();

@@ -155,4 +155,17 @@ public class Book {
             return (result / number);
         }
     }
+
+    public Book(@NotBlank String isbn, @NotBlank String title, List<Author> authors, @NotBlank String publishingHouse, Integer year, List<Genre> genres, ImageModel img, List<Rating> ratings, String description, int stock) {
+        this.isbn = isbn;
+        this.title = title;
+        this.authors = authors;
+        this.publishingHouse = publishingHouse;
+        this.year = year;
+        this.genres = genres;
+        this.img = img;
+        this.ratings = ratings;
+        this.description = description;
+        this.stock = stock;
+    }
 }

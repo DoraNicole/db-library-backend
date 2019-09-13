@@ -71,8 +71,8 @@ public class UserService implements UserServiceInterface {
                     "There is an account with that email adress: "
                             + userDto.getEmail());
         }
-        User newUser = new User();
 
+        User newUser = new User();
 
         if (userDto.getEmail().equals("librarymaster0@gmail.com")) {
             Role adminRole = roleRepository.findByName("ROLE_ADMIN");
