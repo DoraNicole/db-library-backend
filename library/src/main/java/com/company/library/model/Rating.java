@@ -55,4 +55,11 @@ public class Rating {
     public void setDate(LocalDate date) {
         this.date = date;
     }
+
+    public Rating(Double value, String description, User user, LocalDate date) {
+        this.value = value;
+        this.description = description;
+        this.user = user;
+        this.date = date;
+    }
 }

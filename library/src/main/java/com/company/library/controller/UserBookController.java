@@ -38,12 +38,14 @@ public class UserBookController {
     public void addUserBook(@RequestBody UserBook userBook) throws UserHasPenaltiesException, BookOutOfStock {
 
         userBookService.addUserBook(userBook);
-        User user= userBook.getUser();
-        SimpleMailMessage message = new SimpleMailMessage();
-        message.setTo(user.getEmail());
-        message.setSubject("Book borrowing notification");
-        message.setText(String.format("Good choice, my friend. Enjoy your read! You can return it until "+ userBook.getReturn_date().toString()));
-        emailService.sendEmail(message);
+        emailService.sendBorrowEmail(userBook);
+
+//        User user= userBook.getUser();
+//        SimpleMailMessage message = new SimpleMailMessage();
+//        message.setTo(user.getEmail());
+//        message.setSubject("Book borrowing notification");
+//        message.setText(String.format("Good choice, my friend. Enjoy your read! You can return it until "+ userBook.getReturn_date().toString()));
+//        emailService.sendEmail(message);
 
     }
 
@@ -71,5 +73,10 @@ public class UserBookController {
     @PostMapping("/returnBook")
     public void returnBook(@RequestParam("id") Long userId){
         userBookService.returnBorrowBook(userId);
+    }
+
+    @PostMapping("/sendAlmostReturnDateEmail")
+    public void sendAlmostReturnEmail(){
+        userBookService.sendReminder();
     }
 }

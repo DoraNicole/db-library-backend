@@ -54,13 +54,15 @@ public class ActivateAccountController {
             e.printStackTrace();
         }
 
-        SimpleMailMessage message = new SimpleMailMessage();
-        message.setTo(registered.getEmail());
-        message.setSubject("Welcome to our library platform!");
-        message.setText(String.format("Please click the following link to confirm your account activation : %s", url));
+//        SimpleMailMessage message = new SimpleMailMessage();
+//        message.setTo(registered.getEmail());
+//        message.setSubject("Welcome to our library platform!");
+//        message.setText(String.format("Please click the following link to confirm your account activation : %s", url));
 
-        emailService.sendEmail(message);
-        return registered;
+//        emailService.sendEmail(message);
+        emailService.sendActivateAccountEmail(userService.findUserByEmail(userDto.getEmail()), url.toString());
+
+          return registered;
 
     }
 
@@ -93,11 +95,12 @@ public class ActivateAccountController {
             e.printStackTrace();
         }
 
-        SimpleMailMessage message = new SimpleMailMessage();
-        message.setTo(user.getEmail());
-        message.setSubject("Welcome to our library platform!");
-        message.setText(String.format("Your code is: " + savedToken.getToken() + " Please click the following link to confirm your account activation : %s", url));
-        emailService.sendEmail(message);
+//        SimpleMailMessage message = new SimpleMailMessage();
+//        message.setTo(user.getEmail());
+//        message.setSubject("Welcome to our library platform!");
+//        message.setText(String.format("Your code is: " + savedToken.getToken() + " Please click the following link to confirm your account activation : %s", url));
+//        emailService.sendEmail(message);
+        emailService.sendWelcomeEmail(user);
     }
 
     @GetMapping("/registerConfirm")
