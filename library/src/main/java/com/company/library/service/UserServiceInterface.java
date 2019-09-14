@@ -19,6 +19,8 @@ public interface UserServiceInterface {
     User findUserByEmail(String email);
 
     void clearPenalties(User user);
+    void removeOnePenalty(User u, String penaltyId);
+    void addOnePenalty(User u);
 
     void checkForPenalties(User user);
 }
