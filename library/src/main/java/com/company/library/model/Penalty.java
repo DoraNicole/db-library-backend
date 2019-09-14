@@ -11,6 +11,7 @@ public class Penalty {
 
     public static int maxNumberOfPenalties = 2;
     public static int numberOfMonthsPenaltyExist = 6;
+    public static int oneMonth = 1;
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;

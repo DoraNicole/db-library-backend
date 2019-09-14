@@ -15,12 +15,13 @@ import com.company.library.repository.UserRepositoryInterface;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.support.PagedListHolder;
 import org.springframework.data.domain.Sort;
+import org.springframework.security.core.parameters.P;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+
+import javax.jws.soap.SOAPBinding;
 import java.time.LocalDate;
-import java.util.Collections;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
@@ -148,21 +149,48 @@ public class UserService implements UserServiceInterface {
 
     @Override
     public void clearPenalties(User u) {
-        //find the user and search for old penalties to remove them
-        userRepository.findById(u.getId()).ifPresent(t->t.getPenalties().forEach(p-> {
-            if(p.getPenaltyAddedDate().isBefore(LocalDate.now()))
-                t.getPenalties().remove(p);
+        List<Penalty> listForRemove = new ArrayList<>();
+        userRepository.findById(u.getId()).ifPresent(user -> user.getPenalties().forEach(penalty -> {
+            if(penalty.getPenaltyAddedDate().isBefore(LocalDate.now())){
+                listForRemove.add(penalty);
+            }
         }));
+        User user = userRepository.findById(u.getId()).orElse(null);
+        assert user != null;
+        if(user.getPenalties().size() > 0)
+        user.getPenalties().removeAll(listForRemove);
+        System.out.println(user.getPenalties().size());
+        userRepository.saveAndFlush(user);
+    }
+
+    @Override
+    public void addOnePenalty(User u) {
+        User user = userRepository.findById(u.getId()).orElse(null);
+        assert user != null;
+        user.addPenalty(new Penalty(LocalDate.now().plusMonths(Penalty.oneMonth)));
+        userRepository.saveAndFlush(user);
+    }
+
+    @Override
+    public void removeOnePenalty(User u, String penaltyId) {
+        User user = userRepository.findById(u.getId()).orElse(null);
+        Penalty penalty = null;
+        assert user != null;
+        for (Penalty p:user.getPenalties()) {
+            if(p.getId()==Long.parseLong(penaltyId)){
+                penalty = p;
+            }
+        }
+        user.getPenalties().remove(penalty);
+        userRepository.saveAndFlush(user);
     }
 
     @Override
     public void checkForPenalties(User user) {
-        userBookService.getUserBooks().stream().filter(t->t.getUser().getId().equals(user.getId())).forEach(t->{
-            System.out.println(t);
-            if(!t.isGeneratedPenalty() && t.getReturn_date().isBefore(LocalDate.now())) {
-                t.getUser().addPenalty(new Penalty(LocalDate.now().plusMonths(Penalty.numberOfMonthsPenaltyExist)));
-                System.out.println(t.isGeneratedPenalty());
-                userBookService.changeUserBookPenalty(t.getId());
+        userBookService.getUserBooks().stream().filter(t->t.getUser().getId().equals(user.getId())).forEach(penalty ->{
+            if(!penalty.isGeneratedPenalty() & penalty.getReturn_date().isBefore(LocalDate.now())) {
+                penalty.getUser().addPenalty(new Penalty(LocalDate.now().plusMonths(Penalty.numberOfMonthsPenaltyExist)));
+                userBookService.changeUserBookPenalty(penalty.getId());
             }
         });
     }

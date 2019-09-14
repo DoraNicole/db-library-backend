@@ -46,7 +46,7 @@ public class User {
 
     private LocalDate banUntil;
 
-    @OneToMany(cascade = CascadeType.ALL)
+    @OneToMany(fetch = FetchType.LAZY,cascade = CascadeType.ALL,orphanRemoval = true)
     private List<Penalty> penalties = new ArrayList<>();
 
     @OneToMany(fetch = FetchType.LAZY,cascade = CascadeType.ALL,orphanRemoval = true)
@@ -130,6 +130,9 @@ public class User {
     public void addPenalty(Penalty penalty) {
         this.penalties.add(penalty);
     }
+    public void removePenalty(Penalty penalty) {
+        this.penalties.remove(penalty);
+    }
 
     public boolean isBanned() {
         return isBanned;
@@ -143,7 +146,7 @@ public class User {
     //delete old penalties that are not any more valid
     public void clearOldPenalties() {
         penalties.stream()
-                .filter(t -> t.getPenaltyAddedDate().plusMonths(Penalty.numberOfMonthsPenaltyExist).isBefore(LocalDate.now()))
+                .filter(t -> t.getPenaltyAddedDate().isBefore(LocalDate.now()))
                 .forEach(t -> penalties.remove(t));
     }
 

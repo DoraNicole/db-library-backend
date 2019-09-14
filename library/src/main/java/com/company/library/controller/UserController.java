@@ -71,10 +71,25 @@ public class UserController {
        userService.save(user);
     }
 
+    @PreAuthorize("hasRole('ADMIN')")
+    @PostMapping("/addPenalty")
+    public void addPenalty(@RequestBody User user){
+        userService.addOnePenalty(user);
+    }
+
+    @PreAuthorize("hasRole('ADMIN')")
+    @PostMapping("/removePenalty")
+    public void removePenalty(@RequestBody User user,
+                              @RequestParam("penaltyId") String penaltyId){
+        userService.removeOnePenalty(user,penaltyId);
+    }
+
     @PostMapping("/clearPenalties")
     public void clearPenalties(@RequestBody User user){
         userService.clearPenalties(user);
     }
+
+
 
     @PostMapping("/checkForPenalties")
    public void checkForPenalties(@RequestBody User user){
