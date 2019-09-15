@@ -17,7 +17,7 @@ public class Book {
     @NotBlank
     private String title;
 
-    @OneToMany(fetch = FetchType.LAZY,cascade = CascadeType.ALL,orphanRemoval = true)
+    @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Author> authors;
 
     @NotBlank
@@ -25,19 +25,19 @@ public class Book {
 
     private Integer year;
 
-    @OneToMany(fetch = FetchType.LAZY,cascade = CascadeType.ALL,orphanRemoval = true)
+    @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Genre> genres;
 
-    @OneToOne(fetch = FetchType.LAZY,cascade = CascadeType.ALL,orphanRemoval = true)
+    @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
     private ImageModel img;
 
-    @OneToMany(fetch = FetchType.LAZY,cascade = CascadeType.ALL,orphanRemoval = true)
+    @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Rating> ratings;
 
     private Double averageStars;
 
 
-    @Column(columnDefinition="TEXT")
+    @Column(columnDefinition = "TEXT")
     private String description;
 
     public String getDescription() {
@@ -49,6 +49,20 @@ public class Book {
     }
 
     private int stock;
+
+    private Long borrowCount;
+
+    public Long getBorrowCount() {
+        return borrowCount;
+    }
+
+    public void setBorrowCount(Long borrowCount) {
+        this.borrowCount = borrowCount;
+    }
+
+    public void increaseBorrowCount() {
+        this.borrowCount++;
+    }
 
     public Long getId() {
         return id;
@@ -130,11 +144,11 @@ public class Book {
         this.stock = stock;
     }
 
-    public void addStock(){
+    public void addStock() {
         this.stock++;
     }
 
-    public void decreseStock(){
+    public void decreseStock() {
         this.stock--;
     }
 
@@ -145,9 +159,9 @@ public class Book {
     public double setAverageStars() {
         double result = 0d;
         List<Rating> ratings = getRatings();
-        if(ratings.isEmpty()){
+        if (ratings.isEmpty()) {
             return 0;
-        }else{
+        } else {
             int number = ratings.size();
             for (Rating i : ratings) {
                 result = i.getValue() + result;

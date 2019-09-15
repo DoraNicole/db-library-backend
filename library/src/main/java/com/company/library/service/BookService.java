@@ -55,7 +55,7 @@ public class BookService implements BookServiceInterface {
         if (!(direction.equals(Direction.ASCENDING.getDirectionCode()) || direction.equals(Direction.DESCENDING.getDirectionCode()))) {
             throw new PaginationSortingException("Invalid sort direction");
         }
-        if (!(orderBy.equals(OrderBy.ID.getOrderByCode()) || orderBy.equals(OrderBy.TITLE.getOrderByCode()))) {
+        if (!(orderBy.equals(OrderBy.ID.getOrderByCode()) || orderBy.equals(OrderBy.TITLE.getOrderByCode()) || orderBy.equals(OrderBy.VALUE.getOrderByCode()) || orderBy.equals(OrderBy.BORROW_COUNT.getOrderByCode()))) {
             throw new PaginationSortingException("Invalid orderBy condition");
         }
 
@@ -79,7 +79,7 @@ public class BookService implements BookServiceInterface {
     @Override
     public ResponsePageList<Book> findPreferredBooks(String orderBy, String direction, int page, int size, String id) {
 
-        if (!(direction.equals(Direction.ASCENDING.getDirectionCode()) || direction.equals(Direction.DESCENDING.getDirectionCode()))) {
+        if (!(orderBy.equals(OrderBy.ID.getOrderByCode()) || orderBy.equals(OrderBy.TITLE.getOrderByCode()) || orderBy.equals(OrderBy.VALUE.getOrderByCode()) || orderBy.equals(OrderBy.BORROW_COUNT.getOrderByCode()))) {
             throw new PaginationSortingException("Invalid sort direction");
         }
         if (!(orderBy.equals(OrderBy.ID.getOrderByCode()) || orderBy.equals(OrderBy.TITLE.getOrderByCode()) || orderBy.equals(OrderBy.VALUE.getOrderByCode()))) {

@@ -1,5 +1,7 @@
 package com.company.library.service;
 
+import com.company.library.DTO.ChartObject;
+import com.company.library.DTO.StatusChart;
 import com.company.library.enums.Direction;
 import com.company.library.enums.OrderBy;
 import com.company.library.exceptions.BookOutOfStock;
@@ -16,8 +18,7 @@ import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
@@ -37,7 +38,6 @@ public class UserBookService implements UserBookServiceInterface {
     EmailService emailService;
 
 
-
     @Override
     public void addUserBook(UserBook userBook) throws UserHasPenaltiesException, BookOutOfStock {
 
@@ -52,6 +52,7 @@ public class UserBookService implements UserBookServiceInterface {
             //when we loan a book the stock should decrease with one unit
             //we use bookService so the value will change in database
             bookService.findBookById(userBook.getBook().getId()).decreseStock();
+            bookService.findBookById(userBook.getBook().getId()).increaseBorrowCount();
             userBookRepositoryInterface.save(userBook);
         } else
             //throws exception and doesn`t save userBook instance if user has 2 penalties
@@ -126,6 +127,42 @@ public class UserBookService implements UserBookServiceInterface {
     @Override
     public void removeById(Long userBookId) {
         userBookRepositoryInterface.deleteById(userBookId);
+    }
+
+    @Override
+    public List<ChartObject> populateChart() {
+
+        List<ChartObject> chartObjectList = new ArrayList<>();
+        Set<String> genreSet = new HashSet<>();
+        List<UserBook> userBookList = userBookRepositoryInterface.findAll();
+        userBookList.forEach(userBook -> userBook.getBook().getGenres().forEach(genre -> genreSet.add(genre.getName())));
+
+        for (String genre : genreSet) {
+            long count = 0L;
+            List<Book> bookList = userBookList.stream().map(UserBook::getBook).collect(Collectors.toList());
+            List<Genre> genreList = new ArrayList<>();
+            bookList.stream().map(Book::getGenres).forEach(genreList::addAll);
+            for (Genre genreObj : genreList) {
+                if (genre.equals(genreObj.getName())) {
+                    count++;
+                }
+            }
+            chartObjectList.add(new ChartObject(count,genre));
+        }
+        return chartObjectList;
+    }
+
+    @Override
+    public List<StatusChart> populateStatusChart(){
+
+        List<StatusChart> statusCharts = new ArrayList<>();
+        long countAvailable = bookService.getBooks().stream().mapToLong(Book::getStock).sum();
+        long countBlocked = userBookRepositoryInterface.findAll().stream().filter(UserBook::isGeneratedPenalty).count();
+        long countBorrowed = userBookRepositoryInterface.findAll().stream().filter(userBook -> !userBook.isGeneratedPenalty()).count();
+        statusCharts.add(new StatusChart(countAvailable,"Available"));
+        statusCharts.add(new StatusChart(countBlocked,"Blocked"));
+        statusCharts.add(new StatusChart(countBorrowed,"Borrowed"));
+        return statusCharts;
     }
 }
 

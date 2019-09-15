@@ -1,5 +1,7 @@
 package com.company.library.controller;
 
+import com.company.library.DTO.ChartObject;
+import com.company.library.DTO.StatusChart;
 import com.company.library.exceptions.BookOutOfStock;
 import com.company.library.exceptions.UserHasPenaltiesException;
 import com.company.library.model.Book;
@@ -10,11 +12,14 @@ import com.company.library.service.EmailService;
 import com.company.library.service.UserBookServiceInterface;
 import com.company.library.service.UserServiceInterface;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 @RestController
 public class UserBookController {
@@ -71,5 +76,15 @@ public class UserBookController {
     @PostMapping("/returnBook")
     public void returnBook(@RequestParam("id") Long userId){
         userBookService.returnBorrowBook(userId);
+    }
+
+    @GetMapping("/populateChart")
+    public ResponseEntity<List<ChartObject>> populateChart(){
+        return new ResponseEntity<>(userBookService.populateChart(), HttpStatus.OK);
+    }
+
+    @GetMapping("/populateStatus")
+    public ResponseEntity<List<StatusChart>> populateStatus(){
+        return new ResponseEntity<>(userBookService.populateStatusChart(), HttpStatus.OK);
     }
 }
