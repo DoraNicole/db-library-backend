@@ -12,6 +12,9 @@ import com.company.library.model.User;
 import com.company.library.repository.RoleRepository;
 import com.company.library.repository.UserRepositoryInterface;
 
+
+import org.apache.tomcat.jni.Local;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.support.PagedListHolder;
 import org.springframework.data.domain.Sort;
@@ -69,9 +72,10 @@ public class UserService implements UserServiceInterface {
                     "There is an account with that email adress: "
                             + userDto.getEmail());
         }
+
         User newUser = new User();
 
-        if (userDto.getEmail().equals("librarymaster0@gmail.com") && userDto.getPassword().equals("qwerty1234.")) {
+        if (userDto.getEmail().equals("librarymaster0@gmail.com")) {
             Role adminRole = roleRepository.findByName("ROLE_ADMIN");
             newUser.setFirstName(userDto.getFirstName());
             newUser.setLastName(userDto.getLastName());
@@ -88,6 +92,7 @@ public class UserService implements UserServiceInterface {
             newUser.setRoles(Collections.singleton(userRole));
             newUser.setAdmin(false);
         }
+
         return userRepository.save(newUser);
     }
 

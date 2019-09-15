@@ -27,8 +27,9 @@ public class PasswordResetController {
 
     private String key;
 
+
+
     Map<String, String> map = new HashMap<>();
-    long i;
 
     @Autowired
     private UserService userService;
@@ -70,16 +71,18 @@ public class PasswordResetController {
                     e.printStackTrace();
                 }
 
-                SimpleMailMessage message = new SimpleMailMessage();
-                message.setTo(passwordForgottenDTO.getEmail());
-                message.setSubject("Password reset");
-                message.setText(String.format("You have requested a password reset, here is your unique code: " + random + ". Now please click the following link to reset your password : %s", url));
-                emailService.sendEmail(message);
+//                SimpleMailMessage message = new SimpleMailMessage();
+//                message.setTo(passwordForgottenDTO.getEmail());
+//                message.setSubject("Password reset");
+//                message.setText(String.format("You have requested a password reset, here is your unique code: " + random + ". Now please click the following link to reset your password : %s", url));
+//                emailService.sendEmail(message);
 
+                emailService.sendResetPasswordEmail(userService.findUserByEmail(passwordForgottenDTO.getEmail()), random);
 
                 key = random;
 
                 map.put(passwordForgottenDTO.getEmail(), key);
+
 
             } else {
                 System.out.println("This email doesn't exist in the database!");

@@ -60,10 +60,11 @@ public class GenreService implements GenreServiceInterface {
         genreRepository.deleteById(id);
     }
 
-    @Override
-    public ResponsePageList<Genre> findGenreByName(String orderBy, String direction, int page, int size, String query) {
+
+    public Sort sorting(String direction, String orderBy) {
 
         Sort sort = null;
+
         if (direction.equals("ASC")) {
             sort = new Sort(Sort.Direction.ASC, orderBy);
         }
@@ -77,6 +78,15 @@ public class GenreService implements GenreServiceInterface {
         if (!(orderBy.equals(OrderBy.ID.getOrderByCode()) || orderBy.equals(OrderBy.TITLE.getOrderByCode()))) {
             throw new PaginationSortingException("Invalid orderBy condition");
         }
+
+        return sort;
+    }
+
+    @Override
+    public ResponsePageList<Genre> findGenreByName(String orderBy, String direction, int page, int size, String query) {
+
+        Sort sort = sorting(direction, orderBy);
+
 
         Predicate<Genre> containName = genre -> genre.getName().equalsIgnoreCase(query);
         List<Genre> authorList = genreRepository.findAll(sort).stream().filter(containName).collect(Collectors.toList());
