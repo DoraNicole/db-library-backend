@@ -1,5 +1,7 @@
 package com.company.library.service;
 
+import com.company.library.DTO.ChartObject;
+import com.company.library.DTO.StatusChart;
 import com.company.library.exceptions.BookOutOfStock;
 import com.company.library.exceptions.UserHasPenaltiesException;
 import com.company.library.model.ResponsePageList;
@@ -16,4 +18,6 @@ public interface UserBookServiceInterface {
     void returnBorrowBook(Long userBookId);
     void changeUserBookPenalty(Long userBookId);
     void removeById(Long userBookId);
+    List<ChartObject> populateChart();
+    List<StatusChart> populateStatusChart();
 }
