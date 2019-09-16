@@ -62,4 +62,7 @@ public class Rating {
         this.user = user;
         this.date = date;
     }
+
+    public Rating() {
+    }
 }
