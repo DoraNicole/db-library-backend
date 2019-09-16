@@ -10,8 +10,4 @@ import java.util.List;
 
 @Repository
 public interface UserBookRepositoryInterface extends JpaRepository<UserBook,Long> {
-
-    @Query("select ub from UserBook ub where sysdate + 1 = ub.return_date")
-    List<UserBook> remindUsers();
-
 }
