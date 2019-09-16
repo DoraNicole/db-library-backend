@@ -45,6 +45,7 @@ public class ActivateAccountController {
         User registered = userService.registerNewUserAccount(userDto);
         VerificationToken token = new VerificationToken(registered);
         VerificationToken savedToken = verificationTokenRepository.save(token);
+        String code = savedToken.getToken();
 
         URL url = null;
         try {
@@ -60,7 +61,8 @@ public class ActivateAccountController {
 //        message.setText(String.format("Please click the following link to confirm your account activation : %s", url));
 
 //        emailService.sendEmail(message);
-        emailService.sendActivateAccountEmail(userService.findUserByEmail(userDto.getEmail()), url.toString());
+        assert url != null;
+        emailService.sendActivateAccountEmail(userService.findUserByEmail(userDto.getEmail()), code);
 
           return registered;
 
@@ -95,12 +97,8 @@ public class ActivateAccountController {
             e.printStackTrace();
         }
 
-//        SimpleMailMessage message = new SimpleMailMessage();
-//        message.setTo(user.getEmail());
-//        message.setSubject("Welcome to our library platform!");
-//        message.setText(String.format("Your code is: " + savedToken.getToken() + " Please click the following link to confirm your account activation : %s", url));
-//        emailService.sendEmail(message);
-        emailService.sendWelcomeEmail(user);
+        String code = savedToken.getToken();
+        emailService.sendActivateAccountEmail(user,code);
     }
 
     @GetMapping("/registerConfirm")
@@ -120,9 +118,8 @@ public class ActivateAccountController {
         User registeredUser = storedToken.getUser();
         registeredUser.setEnabled(true);
         userService.save(registeredUser);
+        emailService.sendWelcomeEmail(verificationTokenRepository.findByToken(token).getUser());
         verificationTokenRepository.delete(storedToken);
-
-
     }
 
     @PreAuthorize("hasRole('ADMIN')")

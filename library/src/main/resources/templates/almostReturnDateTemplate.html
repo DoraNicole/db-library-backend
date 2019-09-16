@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
+<html xmlns:th="http://www.thymeleaf.org">
 <head>
     <style>
 
@@ -20,23 +20,23 @@
 </head>
 <body>
 
-<div class="container" style="margin-bottom: 50px"><pre>    Dear <span th:text="${firstName}"/>,</pre> </div>
+<div class="container" style="margin-bottom: 50px"><pre>    Dear <span th:text="${firstName}"></span>,</pre> </div>
 <div class="container">
     <div class="row">
         <div class="col" style="padding-top: 20px">
             We hope you enjoyed reading this book. Tommorrow it is the date you have to return <br>
-            the book, <span th:text="${bookTitle}"/>, due to our terms and conditions, otherwise<br>
+            the book, <span th:text="${bookTitle}"></span>, due to our terms and conditions, otherwise<br>
             you will be penalised.
         </div>
         <div class="col">
-            <img style="width: 150px" src="https://cdn1.iconfinder.com/data/icons/everyday-objects-1/128/feather-ink-pen-512.png">
+            <img style="width: 150px" src="../logo-black-pen.png" th:src="|cid:${pen}|">
         </div>
     </div>
 </div>
 <div class="container">
     <pre>  Yours sincerely,<br>Bookaholoic team.</pre>
     <div>
-        <img alt="sigla"  style="width: 100px; margin-left: 30px" src="https://i.imgur.com/xyE5LSy.png">
+        <img alt="sigla" style="width: 100px; margin-left: 30px" src="../logo-black.png" th:src="|cid:${logo}|">
     </div>
 </div>
 

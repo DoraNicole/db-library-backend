@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
+<html xmlns:th="http://www.thymeleaf.org">
 <head>
     <style>
 
@@ -12,7 +12,7 @@
             margin-left: auto;
         }
 
-        .row{
+        .row {
             display: flex;
         }
 
@@ -20,23 +20,25 @@
 </head>
 <body>
 
-<div class="container" style="margin-bottom: 50px"><pre>    Dear <span th:text="${firstName}"/>,</pre> </div>
+<div class="container" style="margin-bottom: 50px">
+    <pre>    Dear <span th:text="${firstName}"></span>,</pre>
+</div>
 <div class="container">
     <div class="row">
         <div class="col" style="padding-top: 20px">
             We are sending you a magical key to activate your account.<br>
-            Write your unique link in the special box and start reading your favourite books!<br>
-            <span style="align-content: center" th:text="${link}"/>
+            <b><span style="align-content: center; margin-left: auto; margin-top: 20px; margin-bottom: 20px" th:text="${code}"></span></b><br>
+            Write your unique code in the special box at login and start reading your favourite books!
         </div>
         <div class="col">
-            <img style="width: 150px" src="https://cdn1.iconfinder.com/data/icons/everyday-objects-1/128/feather-ink-pen-512.png">
+            <img style="width: 150px" src="../logo-black-pen.png" th:src="|cid:${pen}|">
         </div>
     </div>
 </div>
 <div class="container">
     <pre>  Yours sincerely,<br>Bookaholoic team.</pre>
     <div>
-        <img alt="sigla"  style="width: 100px; margin-left: 30px" src="https://i.imgur.com/xyE5LSy.png">
+        <img alt="sigla" style="width: 100px; margin-left: 30px" src="../logo-black.png" th:src="|cid:${logo}|">
     </div>
 </div>
 
