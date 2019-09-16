@@ -55,12 +55,12 @@ public class UserBookController {
     }
 
     @GetMapping("/reminder")
-    public void reminder(){
+    public void reminder() {
         userBookService.sendReminder();
     }
 
     @DeleteMapping("/removeUserBook/{id}")
-    public void removeUserBook(@PathVariable(value = "id") Long id){
+    public void removeUserBook(@PathVariable(value = "id") Long id) {
         userBookService.removeById(id);
     }
 
@@ -71,27 +71,28 @@ public class UserBookController {
             @RequestParam("page") int page,
             @RequestParam("size") int size,
             @RequestParam("id") String id
-    ){
+    ) {
         return userBookService.getBorrowedBooks(orderBy, direction, page, size, id);
     }
 
     @PostMapping("/returnBook")
-    public void returnBook(@RequestParam("id") Long userId){
+    public void returnBook(@RequestParam("id") Long userId) {
         userBookService.returnBorrowBook(userId);
     }
 
     @GetMapping("/populateChart")
-    public ResponseEntity<List<ChartObject>> populateChart(){
+    public ResponseEntity<List<ChartObject>> populateChart() {
         return new ResponseEntity<>(userBookService.populateChart(), HttpStatus.OK);
     }
 
     @GetMapping("/populateStatus")
-    public ResponseEntity<List<StatusChart>> populateStatus(){
+    public ResponseEntity<List<StatusChart>> populateStatus() {
         return new ResponseEntity<>(userBookService.populateStatusChart(), HttpStatus.OK);
-
-    @PostMapping("/sendAlmostReturnDateEmail")
-    public void sendAlmostReturnEmail(){
-        userBookService.sendReminder();
-
     }
-}
+        @PostMapping("/sendAlmostReturnDateEmail")
+        public void sendAlmostReturnEmail(){
+            userBookService.sendReminder();
+
+        }
+    }
+

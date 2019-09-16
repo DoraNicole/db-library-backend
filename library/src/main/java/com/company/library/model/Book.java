@@ -170,6 +170,10 @@ public class Book {
         }
     }
 
+    public Book(){
+
+    }
+
     public Book(@NotBlank String isbn, @NotBlank String title, List<Author> authors, @NotBlank String publishingHouse, Integer year, List<Genre> genres, ImageModel img, List<Rating> ratings, String description, int stock) {
         this.isbn = isbn;
         this.title = title;

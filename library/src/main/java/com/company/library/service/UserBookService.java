@@ -9,10 +9,7 @@ import com.company.library.enums.OrderBy;
 import com.company.library.exceptions.BookOutOfStock;
 import com.company.library.exceptions.PaginationSortingException;
 import com.company.library.exceptions.UserHasPenaltiesException;
-import com.company.library.model.Penalty;
-import com.company.library.model.ResponsePageList;
-import com.company.library.model.User;
-import com.company.library.model.UserBook;
+import com.company.library.model.*;
 import com.company.library.repository.UserBookRepositoryInterface;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.support.PagedListHolder;
@@ -73,8 +70,11 @@ public class UserBookService implements UserBookServiceInterface {
 
     @Scheduled(cron = "0 * * * * *")
     public void sendReminder() {
-        List<UserBook> list = userBookRepositoryInterface.remindUsers();
-            list.forEach(t->emailService.sendAlmostReturnDateEmail(t));
+        List<UserBook> list = userBookRepositoryInterface.findAll();
+            list.forEach(t->{
+                if(t.getReturn_date().plusDays(1l).equals(LocalDate.now()))
+                    emailService.sendAlmostReturnDateEmail(t);
+            });
     }
 
 
